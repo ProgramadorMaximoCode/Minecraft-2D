@@ -8,10 +8,10 @@ World::World() {
             int chunkY = y / CHUNK_SIZE;
             int localX = x % CHUNK_SIZE;
             int localY = y % CHUNK_SIZE;
-            m_chunks[chunkX][chunkY].setBlock(localX, localY, Chunk::BlockType::Air);
+            m_chunks[chunkX][chunkY].setBlock(localX, localY, 0);
         }
     }
-}
+} 
 
 void World::generate() {
     std::random_device rd;
@@ -36,7 +36,7 @@ void World::generate() {
             int localX = x % CHUNK_SIZE;
             int localY = y % CHUNK_SIZE;
 
-            m_chunks[chunkX][chunkY].setBlock(localX, localY, Chunk::BlockType::Air);
+            m_chunks[chunkX][chunkY].setBlock(localX, localY, 0);
         }
 
         int chunkX = x / CHUNK_SIZE;
@@ -44,29 +44,29 @@ void World::generate() {
         int localX = x % CHUNK_SIZE;
         int glocalY = height % CHUNK_SIZE;
 
-        m_chunks[chunkX][gchunkY].setBlock(localX, glocalY, Chunk::BlockType::Grass);
+        m_chunks[chunkX][gchunkY].setBlock(localX, glocalY, 1);
 
         for (int y = height + 1; y < stone; ++y) {
             int chunkY = y / CHUNK_SIZE;
             int localY = y % CHUNK_SIZE;
-            m_chunks[chunkX][chunkY].setBlock(localX, localY, Chunk::BlockType::Dirt);
+            m_chunks[chunkX][chunkY].setBlock(localX, localY, 2);
         }
         for (int y = stone; y < deep; ++y) {
             int chunkY = y / CHUNK_SIZE;
             int localY = y % CHUNK_SIZE;
-            m_chunks[chunkX][chunkY].setBlock(localX, localY, Chunk::BlockType::Stone);
+            m_chunks[chunkX][chunkY].setBlock(localX, localY, 3);
         }
         for (int y = deep; y < bedrock; ++y) {
             int chunkY = y / CHUNK_SIZE;
             int localY = y % CHUNK_SIZE;
-            m_chunks[chunkX][chunkY].setBlock(localX, localY, Chunk::BlockType::DeepSlate);
+            m_chunks[chunkX][chunkY].setBlock(localX, localY, 4);
         }
         for (int y = bedrock; y < TOTAL_HEIGHT; ++y) {
             int chunkY = y / CHUNK_SIZE;
             int localY = y % CHUNK_SIZE;
-            m_chunks[chunkX][chunkY].setBlock(localX, localY, Chunk::BlockType::Bedrock);
+            m_chunks[chunkX][chunkY].setBlock(localX, localY, 5);
         }
-        // suavizado de terreno
+
         int r = variation(gen);
         if (r == 0 && height > 0) --height;
         else if (r == 2 && height < TOTAL_HEIGHT - 1) ++height;
@@ -85,9 +85,9 @@ void World::generate() {
     }
 }
 
-Chunk::BlockType World::getBlock(int x, int y) const {
+int World::getBlock(int x, int y) const {
     if (x < 0 || x >= TOTAL_WIDTH || y < 0 || y >= TOTAL_HEIGHT)
-        return Chunk::BlockType::Air;
+        return 0;
 
     int chunkX = x / CHUNK_SIZE;
     int chunkY = y / CHUNK_SIZE;
@@ -97,7 +97,7 @@ Chunk::BlockType World::getBlock(int x, int y) const {
     return m_chunks[chunkX][chunkY].getBlock(localX, localY);
 }
 
-void World::setBlock(int x, int y, Chunk::BlockType type) {
+void World::setBlock(int x, int y, int type) {
     if (x < 0 || x >= TOTAL_WIDTH || y < 0 || y >= TOTAL_HEIGHT)
         return;
 
@@ -110,9 +110,9 @@ void World::setBlock(int x, int y, Chunk::BlockType type) {
 }
 
 
-bool World::isSolid(Chunk::BlockType type) const {
+bool World::isSolid(int type) const {
     switch (type) {
-        case Chunk::BlockType::Air:
+        case 0: 
             return false;
         default:
             return true;

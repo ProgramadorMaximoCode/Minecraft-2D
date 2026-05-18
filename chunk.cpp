@@ -5,16 +5,16 @@ Chunk::Chunk()
 {
     for (int x = 0; x < SIZE; ++x) {
         for (int y = 0; y < SIZE; ++y) {
-            grid[x][y] = BlockType::Air;
+            grid[x][y] = 0;
         }
     }
 }
 
-Chunk::BlockType Chunk::getBlock(int x, int y) const {
+int Chunk::getBlock(int x, int y) const {
     return grid[x][y];
 }
 
-void Chunk::setBlock(int x, int y, BlockType type) {
+void Chunk::setBlock(int x, int y, int type) {
     grid[x][y] = type;
 }
 

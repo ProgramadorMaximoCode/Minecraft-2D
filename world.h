@@ -15,9 +15,9 @@ class World {
         World();
         void generate();
 
-        Chunk::BlockType getBlock(int x, int y) const;
-        void setBlock(int x, int y, Chunk::BlockType type);
-        bool isSolid(Chunk::BlockType type) const; 
+        int getBlock(int x, int y) const;
+        void setBlock(int x, int y, int type);
+        bool isSolid(int type) const; 
         sf::FloatRect getBlockHitbox(int x, int y, float tileSize) const;
 
     private:

@@ -4,19 +4,13 @@ class Chunk {
     public:
         static const int SIZE = 16;
 
-        enum class BlockType {
-            Air,
-            Dirt,
-            Grass,
-            Stone,
-            DeepSlate,
-            Bedrock
-        };
+        
+        int id;
 
         Chunk();
 
-        BlockType getBlock(int x, int y) const;
-        void setBlock(int x, int y, BlockType type);
+        int getBlock(int x, int y) const;
+        void setBlock(int x, int y, int type);
 
         int getChunkX() const;
         int getChunkY() const;
@@ -25,6 +19,6 @@ class Chunk {
         int m_chunkX;
         int m_chunkY;
 
-        BlockType grid[SIZE][SIZE];
+        int grid[SIZE][SIZE];
 };
 

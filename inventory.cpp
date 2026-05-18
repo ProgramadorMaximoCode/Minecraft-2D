@@ -14,7 +14,7 @@ int Inventory::size() const {
 
 void Inventory::addItem(int itemID, int count) {
     for (auto& slot : slots) {
-        if (!slot.isEmpty() && slot.itemID == itemID) {
+        if (!slot.isEmpty() && slot.itemID == itemID && slot.count < 64) {
             slot.count += count;
             return;
         }
