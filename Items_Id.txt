@@ -1,0 +1,10 @@
+0 = Air;
+1 = Grass;
+2 = Dirt;
+3 = Stone;
+4 = DeepStone;
+5 = Bedrdock
+6 = Chest;
+7 = Wood;
+8 = Leaf;
+9 = Planks;

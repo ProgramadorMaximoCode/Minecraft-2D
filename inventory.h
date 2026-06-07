@@ -12,6 +12,8 @@ public:
 
     int size() const;
 
+    void setCorrectSize();
+
 private:
     std::vector<ItemStack> slots;
 };

@@ -5,6 +5,7 @@
 #include "player.h"
 #include "inventory.h"
 #include "ItemEntity.h"
+#include "itemData.h"
 #include <vector>
 #include <map>
 #include <random>
@@ -15,15 +16,15 @@
 using namespace sf;
 
 int main() {
-    /*Music music;
+    Music music;
     if (!music.openFromFile("C:\\Programacion\\SFML\\Minecraft 2D\\Sounds\\AriaMath.mp3")) {
         std::cerr << "No se pudo cargar Sounds\\AriaMath.mp3\n";
         return 1;
     }
-    music.setVolume(200.f);
+    music.setVolume(100.f);
     music.setLooping(true);
     music.play();
-    */
+    
     RenderWindow window(VideoMode({800, 720}), "Minecraft 2D!");
     Font font;
     if (!font.openFromFile("C:\\Programacion\\SFML\\Minecraft 2D\\Fonts\\minecraft\\minecraft_font.ttf")) {
@@ -41,7 +42,7 @@ int main() {
     // TEXTURAS
     //********* 
 
-    Texture dirt, grass, stone, deepslate, bedrock, chest, steve, steve2,animationBreaking;
+    Texture dirt, grass, stone, deepslate, bedrock, chest, steve, steve2, animationBreaking, wood, leaf, planks, woodenPickaxe;
 
     if (!dirt.loadFromFile("C:\\Programacion\\SFML\\Minecraft 2D\\Assets\\Dirt.png")) return 1;
     if (!grass.loadFromFile("C:\\Programacion\\SFML\\Minecraft 2D\\Assets\\Grass.png")) return 1;
@@ -52,17 +53,42 @@ int main() {
     if (!steve.loadFromFile("C:\\Programacion\\SFML\\Minecraft 2D\\Assets\\Steve.png")) return 1;
     if (!steve2.loadFromFile("C:\\Programacion\\SFML\\Minecraft 2D\\Assets\\Steve2.png")) return 1;
     if (!animationBreaking.loadFromFile("C:\\Programacion\\SFML\\Minecraft 2D\\Assets\\AnimationBreaking.png")) return 1;
-
+    if (!wood.loadFromFile("C:\\Programacion\\SFML\\Minecraft 2D\\Assets\\Wood.png")) return 1;
+    if (!leaf.loadFromFile("C:\\Programacion\\SFML\\Minecraft 2D\\Assets\\Leaf.png")) return 1;
+    if (!planks.loadFromFile("C:\\Programacion\\SFML\\Minecraft 2D\\Assets\\Planks.png")) return 1;
+    if (!woodenPickaxe.loadFromFile("C:\\Programacion\\SFML\\Minecraft 2D\\Assets\\WoodenPickaxe.png")) return 1;
     int currentFrame = 0;
     int totalFrames = 9;
 
-    Player player(steve, {0.f, 1000.f});
+    std::vector<ItemData> itemData = {
+        {0, AIR, nullptr, false, 0, false, NONE, 0, 0, 0.0f, NONE},
+        {1, GRASS, &grass, true, 64, true, NONE, 0, 1, 0.6f, SHOVEL},
+        {2, DIRT, &dirt, true, 64, true, NONE, 0, 1, 0.5f, SHOVEL},
+        {3, STONE, &stone, true, 64, true, NONE, 0, 1, 1.5f, PICKAXE},
+        {4, DEEPSLATE, &deepslate, true, 64, true, NONE, 0, 1, 3.0f, PICKAXE},
+        {5, BEDROCK, &bedrock, true, 64, true, NONE, 0, 1, 9999999.9f, NONE},
+        {6, CHEST, &chest, false, 1, true, NONE, 0, 1, 2.5f , AXE},
+        {7, WOOD, &wood, true , 64 ,true ,NONE ,0 , 1, 2.0f , AXE},
+        {8 , LEAF ,&leaf ,true ,64 ,true ,NONE ,0 ,1, 0.3f , HOE},
+        {9 , PANKS ,&planks ,true ,64 ,true ,NONE ,0 ,1, 2.0f , AXE},
+        {10, WOODEN_PICKAXE, &woodenPickaxe, false, 1, false, PICKAXE, 1, 2, 60.0f, NONE}
+    };
+
+    auto getItemData = [&](int itemID) -> const ItemData* {
+        if (itemID < 0 || itemID >= static_cast<int>(itemData.size())) {
+            return nullptr;
+        }
+
+        return &itemData[itemID];
+    };
+
+    Player player(steve, {8000.f, 1000.f});
     std::vector<ItemEntity> items;
 
     float tileSize = dirt.getSize().x * 0.25f;
     float gravity = 500.f;
 
-    Renderer renderer(tileSize, dirt, grass, stone, deepslate, bedrock, chest, animationBreaking);
+    Renderer renderer(tileSize, dirt, grass, stone, deepslate, bedrock, chest, animationBreaking, wood, leaf, planks, woodenPickaxe);
 
     world.generate();
     world.setBlock(0, 70, 6);
@@ -157,23 +183,19 @@ int main() {
     };
 
     Inventory hotbar(9);
+    hotbar.addItem(10, 1);
     Inventory inventory(27);
     ItemStack cursorItem;
-    int selectedSlot = -1;
+    int selectedSlot = 0;
     bool hasCursorItem = false;
     bool isInventoryOpen = false;
     bool isChestOpen = false;
-
-    std::vector<float> blockRequiredTimes = {
-        0.75f, 0.75f, 7.5f, 15.0f, 9999999.9f, 3.75f
-    };
 
     float breakTime = 0.0f;
     int breakingX = -1;
     int breakingY = -1;
 
     struct ClickedSlot {
-
         Inventory* inventory = nullptr;
         int index = -1;
     };
@@ -182,11 +204,10 @@ int main() {
         Inventory inventory; 
         Chest() : inventory(27) {} 
     };
+
     std::map<std::pair<int, int>, Chest> chests;
     Chest* openedChest = nullptr;
-
-    world.setBlock(500, 100, 6);
-
+ 
     auto onLeftClick = [&](Inventory& inventory, int index) {
         constexpr int maxStackSize = 64;
         ItemStack& slot = inventory.getSlot(index);
@@ -349,6 +370,44 @@ int main() {
         chests.erase(chestIt);
     };
 
+    auto convertWoodToPlanks = [&](Inventory& inventory) {
+
+        for(int i = 0; i < inventory.size(); ++i) {
+            ItemStack& slot = inventory.getSlot(i);
+
+            if (slot.itemID == 7) {
+                if(!hasCursorItem) {
+                    cursorItem = {9, slot.count * 4};
+                    slot = {};
+                    hasCursorItem = true;
+                } else if (cursorItem.itemID == 9) {
+                    cursorItem.count += slot.count * 4;
+                    slot = {};
+                } else if(hasCursorItem && cursorItem.itemID != 9) {
+                    std::swap(slot, cursorItem);
+                }
+            }
+        }
+    };
+    
+    auto calculateRequiredTime = [&](const ItemData& block, int toolType, float toolSpeed) {
+        if(block.name == AIR) return 0.0f;
+
+        const ItemData* blockData = getItemData(block.itemID);
+        if(blockData == nullptr) return 0.0f;
+
+        float hardness = blockData->hardness;
+        int correctTool = blockData->requiredTool;
+
+        if(toolType != correctTool)
+        {
+            return hardness * 2.0f;
+        }
+
+        // Herramienta correcta
+        return (hardness * 30.0f) / toolSpeed / 20.0f;
+    };
+    
     auto breakBlock = [&](int blockX, int blockY, float dt) {
             int playerBlockX = static_cast<int>(player.getPosition().x / tileSize);
             int playerBlockY = static_cast<int>(player.getPosition().y / tileSize);
@@ -357,6 +416,15 @@ int main() {
             int dy = std::abs(blockY - playerBlockY);
 
             if(dx <= 5 && dy <= 5 && world.getBlock(blockX, blockY) != 0) {
+                const ItemData* blockData = getItemData(world.getBlock(blockX, blockY));
+                if(blockData == nullptr || blockData->hardness <= 0.0f) {
+                    breakTime = 0.0f;
+                    breakingX = -1;
+                    breakingY = -1;
+                    currentFrame = 0;
+                    return;
+                }
+
                 if(breakingX != blockX || breakingY != blockY) {
                     breakingX = blockX;
                     breakingY = blockY;
@@ -365,9 +433,31 @@ int main() {
                 }
 
                 breakTime += dt;
-                currentFrame = std::min(totalFrames - 1, static_cast<int>((breakTime / blockRequiredTimes[world.getBlock(blockX, blockY) - 1]) * totalFrames));
 
-                if(breakTime >= blockRequiredTimes[world.getBlock(blockX, blockY) - 1]) {
+                int toolType = NONE;
+                float toolSpeed = 1.0f;
+
+                if(selectedSlot >= 0 && selectedSlot < hotbar.size()) {
+                    const ItemData* selectedItemData = getItemData(hotbar.getSlot(selectedSlot).itemID);
+
+                    if(selectedItemData != nullptr && selectedItemData->toolType != NONE) {
+                        toolType = selectedItemData->toolType;
+                        toolSpeed = static_cast<float>(std::max(1, selectedItemData->toolSpeed));
+                    }
+                }
+
+                float requiredTime = calculateRequiredTime(*blockData, toolType, toolSpeed);
+                if(requiredTime <= 0.0f) {
+                    breakTime = 0.0f;
+                    breakingX = -1;
+                    breakingY = -1;
+                    currentFrame = 0;
+                    return;
+                }
+
+                currentFrame = std::min(totalFrames - 1, static_cast<int>((breakTime / requiredTime) * totalFrames));
+
+                if(breakTime >= requiredTime) {
                     int block = world.getBlock(blockX, blockY);
 
                     if(block == 6) {
@@ -395,7 +485,6 @@ int main() {
                 currentFrame = 0;
             }
     };
-
     while (window.isOpen()) {
         sf::Vector2i mousePixel = sf::Mouse::getPosition(window);
         sf::Vector2f mouseWorld = window.mapPixelToCoords(mousePixel, view);
@@ -426,6 +515,10 @@ int main() {
             if (event->is<Event::KeyPressed>()) {
                 if(Keyboard::isKeyPressed(Keyboard::Key::E)) {
                     isInventoryOpen = !isInventoryOpen;
+                }
+                if(Keyboard::isKeyPressed(Keyboard::Key::C)) {
+                    convertWoodToPlanks(hotbar);
+                    convertWoodToPlanks(inventory);
                 }
             }
 
@@ -459,9 +552,10 @@ int main() {
                     else if(!player.getHitbox().findIntersection(world.getBlockHitbox(blockX, blockY, tileSize))) {
                         if(selectedSlot != -1) {
                             ItemStack& item = hotbar.getSlot(selectedSlot);
+                            const ItemData* selectedItemData = getItemData(item.itemID);
 
-                            if(!item.isEmpty() && world.getBlock(blockX, blockY) == 0) {
-                                world.setBlock(blockX, blockY, hotbar.getSlot(selectedSlot).itemID);
+                            if(!item.isEmpty() && selectedItemData != nullptr && selectedItemData->isBlock && world.getBlock(blockX, blockY) == 0) {
+                                world.setBlock(blockX, blockY, item.itemID);
                                 item.count--;
                                 if(item.count <= 0) {
                                     item = {};
@@ -481,7 +575,6 @@ int main() {
             breakingY = -1;
             currentFrame = 0;
         }
-
         player.setSpeedX(0.f);
 
         if (Keyboard::isKeyPressed(Keyboard::Key::Left) || Keyboard::isKeyPressed(Keyboard::Key::A)) {
@@ -569,13 +662,18 @@ int main() {
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num9)) selectedSlot = 8;
 
         Vector2f target = player.getPosition();
-
         cameraPosition = view.getCenter() + (target - view.getCenter()) * smoothed;
 
         view.setCenter(cameraPosition);
         window.setView(view);
 
+        inventory.setCorrectSize();
+        hotbar.setCorrectSize();
+
         window.clear(sf::Color(104, 178, 202));
+        //********
+        //RENDERER
+        //********
 
         renderer.drawWorld(window, world, chunkMinX, chunkMaxX, chunkMinY, chunkMaxY, blockX, blockY, player);
         renderer.drawPlayer(window, player);

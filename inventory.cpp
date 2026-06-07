@@ -28,3 +28,25 @@ void Inventory::addItem(int itemID, int count) {
         }
     }
 }
+
+void Inventory::setCorrectSize() {
+    for (auto& slot : slots) {
+        if (slot.count > 64) {
+            int excess = slot.count - 64;
+            slot.count = 64;
+            if(excess > 0) {
+                for(auto& slotB : slots) {
+                    if (slotB.isEmpty()) {
+                        slotB.itemID = slot.itemID;
+                        slotB.count = excess;
+                        break;
+                    } else if(slotB.itemID == slot.itemID && slotB.count < 64) {
+                        slotB.count += excess;
+                        break;
+                    }
+                }
+            }
+            
+        }
+    }
+}

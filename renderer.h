@@ -16,6 +16,10 @@ private:
     sf::Sprite bedrockSprite;
     sf::Sprite chestSprite;
     sf::Sprite animationBreakingSprite;
+    sf::Sprite woodSprite;
+    sf::Sprite leafSprite;
+    sf::Sprite planksSprite;
+    sf::Sprite woodenPickaxeSprite;
 
     int frameWidth = 160;
     int frameHeight = 160;
@@ -29,7 +33,11 @@ public:
              sf::Texture& deepSlate,
              sf::Texture& bedrock,
              sf::Texture& chest,
-             sf::Texture& animationBreaking);
+             sf::Texture& animationBreaking, 
+             sf::Texture& wood,
+             sf::Texture& leaf,
+             sf::Texture& planks,
+             sf::Texture& woodenPickaxe);
 
     void drawWorld(sf::RenderWindow& window, const World& world, int chunkMinX, int chunkMaxX, int chunkMinY, int chunkMaxY, int blockX, int blockY, Player& player);
     void drawPlayer(sf::RenderWindow& window, const Player& player);

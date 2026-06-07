@@ -1,5 +1,12 @@
 #include "world.h"
 #include <random>
+#include <vector>
+
+struct TreeData {
+    int x;
+    int groundY;
+    int height;
+};
 
 World::World() {
     for (int x = 0; x < TOTAL_WIDTH; ++x) {
@@ -22,11 +29,16 @@ void World::generate() {
     std::uniform_int_distribution<> deepSlateHeight(161, 185);
     std::uniform_int_distribution<> bedrockHeight(186, TOTAL_HEIGHT - 1);
     std::uniform_int_distribution<> variation(0, 2);
+    std::uniform_int_distribution<> trees(0, 10);
+    std::uniform_int_distribution<> treeHeight(4, 7);
+    std::uniform_int_distribution<> leafHeight(3, 6);
+
 
     int height = grassHeight(gen);
     int stone = stoneHeight(gen);
     int deep = deepSlateHeight(gen);
     int bedrock = bedrockHeight(gen);
+    std::vector<TreeData> treesToPlace;
 
     for (int x = 0; x < TOTAL_WIDTH; ++x) {
 
@@ -45,6 +57,9 @@ void World::generate() {
         int glocalY = height % CHUNK_SIZE;
 
         m_chunks[chunkX][gchunkY].setBlock(localX, glocalY, 1);
+        if(trees(gen) == 0) {
+            treesToPlace.push_back({x, height, treeHeight(gen)});
+        }
 
         for (int y = height + 1; y < stone; ++y) {
             int chunkY = y / CHUNK_SIZE;
@@ -82,6 +97,26 @@ void World::generate() {
         int r4 = variation(gen);
         if (r4 == 0 && bedrock > deep + 3) --bedrock;
         else if (r4 == 2 && bedrock < TOTAL_HEIGHT - 1) ++bedrock;
+    }
+
+    for(const TreeData& tree : treesToPlace) {
+        int topOfTree = tree.groundY - tree.height;
+
+        for(int y = tree.groundY - 1; y > topOfTree; --y) {
+            setBlock(tree.x, y, 7);
+        }
+
+        
+        for(int i = -2; i <= 2; ++i) {
+            setBlock(tree.x + i, topOfTree, 8);
+        }
+        for(int i = -1; i <= 1; ++i) {
+            setBlock(tree.x + i, topOfTree - 1, 8);
+        }
+        for(int i = -1; i <= 1; ++i) {
+            setBlock(tree.x + i, topOfTree - 2, 8);
+        }
+        setBlock(tree.x, topOfTree - 3, 8);
     }
 }
 

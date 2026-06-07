@@ -1,6 +1,6 @@
 #include "renderer.h"
 
-Renderer::Renderer(float tileSize, sf::Texture& dirt, sf::Texture& grass, sf::Texture& stone, sf::Texture& deepSlate, sf::Texture& bedrock, sf::Texture& chest, sf::Texture& animationBreaking)
+Renderer::Renderer(float tileSize, sf::Texture& dirt, sf::Texture& grass, sf::Texture& stone, sf::Texture& deepSlate, sf::Texture& bedrock, sf::Texture& chest, sf::Texture& animationBreaking, sf::Texture& wood, sf::Texture& leaf, sf::Texture& planks, sf::Texture& woodenPickaxe)
     : tileSize(tileSize),
       dirtSprite(dirt),
       grassSprite(grass),
@@ -8,15 +8,23 @@ Renderer::Renderer(float tileSize, sf::Texture& dirt, sf::Texture& grass, sf::Te
       deepSlateSprite(deepSlate),
       bedrockSprite(bedrock),
       chestSprite(chest),
-      animationBreakingSprite(animationBreaking) {
+      woodSprite(wood),
+      leafSprite(leaf),
+      planksSprite(planks),
+      animationBreakingSprite(animationBreaking),
+      woodenPickaxeSprite(woodenPickaxe) {
         dirtSprite.setScale({0.25f, 0.25f});
         grassSprite.setScale({0.25f, 0.25f});
         stoneSprite.setScale({0.25f, 0.25f});
         deepSlateSprite.setScale({0.25f, 0.25f});
         bedrockSprite.setScale({0.25f, 0.25f});
         chestSprite.setScale({0.25f, 0.25f});
+        woodSprite.setScale({0.25f, 0.25f});
+        leafSprite.setScale({0.25f, 0.25f});
+        planksSprite.setScale({0.25f, 0.25f});
         animationBreakingSprite.setTextureRect(sf::IntRect({0, 0}, {frameWidth, frameHeight}));
         animationBreakingSprite.setScale({0.25f, 0.25f});
+        woodenPickaxeSprite.setScale({0.25f, 0.25f});
 }
 
 void Renderer::drawWorld(sf::RenderWindow& window, const World& world, int chunkMinX, int chunkMaxX, int chunkMinY, int chunkMaxY, int blockX, int blockY, Player& player)
@@ -34,7 +42,10 @@ void Renderer::drawWorld(sf::RenderWindow& window, const World& world, int chunk
     bedrockSprite.setScale({0.25f, 0.25f});
     chestSprite.setScale({0.25f, 0.25f});
     animationBreakingSprite.setScale({0.25f, 0.25f});
-
+    woodSprite.setScale({0.25f, 0.25f});
+    leafSprite.setScale({0.25f, 0.25f});
+    planksSprite.setScale({0.25f, 0.25f});
+    woodenPickaxeSprite.setScale({0.25f, 0.25f});
     for (int chunkX = chunkMinX - 2; chunkX <= chunkMaxX + 2; ++chunkX)
     {
         for (int chunkY = chunkMinY - 2; chunkY <= chunkMaxY + 2; ++chunkY)
@@ -102,6 +113,20 @@ void Renderer::drawWorld(sf::RenderWindow& window, const World& world, int chunk
                             chestSprite.setPosition({globalX * tileSize, globalY * tileSize});
                             window.draw(chestSprite);
                             break;
+
+                        case 7:
+                            woodSprite.setPosition({globalX * tileSize, globalY * tileSize});
+                            window.draw(woodSprite);
+                            break;
+                        case 8:
+                            leafSprite.setPosition({globalX * tileSize, globalY * tileSize});
+                            window.draw(leafSprite);
+                            break;
+                        case 9:
+                            planksSprite.setPosition({globalX * tileSize, globalY * tileSize});
+                            window.draw(planksSprite);
+                            break;
+                        
                     }
                 }
             }
@@ -168,6 +193,22 @@ void Renderer::drawHotbar(sf::RenderWindow& window, Inventory& inventory, const 
                     chestSprite.setPosition(slotCenter);
                     chestSprite.setScale({0.20f, 0.20f});
                     window.draw(chestSprite);
+                } else if (itemID == 7) {
+                    woodSprite.setPosition(slotCenter);
+                    woodSprite.setScale({0.20f, 0.20f});
+                    window.draw(woodSprite);
+                } else if (itemID == 8) {
+                    leafSprite.setPosition(slotCenter);
+                    leafSprite.setScale({0.20f, 0.20f});
+                    window.draw(leafSprite);
+                } else if (itemID == 9) {
+                    planksSprite.setPosition(slotCenter);
+                    planksSprite.setScale({0.20f, 0.20f});
+                    window.draw(planksSprite);
+                } else if (itemID == 10) {
+                    woodenPickaxeSprite.setPosition(slotCenter - sf::Vector2f(4.f, 4.f));
+                    woodenPickaxeSprite.setScale({0.25f, 0.25f});
+                    window.draw(woodenPickaxeSprite);
                 }
 
                 const sf::Vector2f textBottomRight(
@@ -218,7 +259,26 @@ void Renderer::drawItemEntity(sf::RenderWindow& window, const ItemEntity& item, 
         chestSprite.setScale({0.12f, 0.12f});
         window.draw(chestSprite);
     }
-    
+    else if(itemID == 7) {
+        woodSprite.setPosition(item.getPosition());
+        woodSprite.setScale({0.12f, 0.12f});
+        window.draw(woodSprite);
+    }
+    else if(itemID == 8) {
+        leafSprite.setPosition(item.getPosition());
+        leafSprite.setScale({0.12f, 0.12f});
+        window.draw(leafSprite);
+    }
+    else if(itemID == 9) {
+        planksSprite.setPosition(item.getPosition());
+        planksSprite.setScale({0.12f, 0.12f});
+        window.draw(planksSprite);
+    }
+    else if(itemID == 10) {
+        woodenPickaxeSprite.setPosition(item.getPosition() + sf::Vector2f(0.f, -4.f));
+        woodenPickaxeSprite.setScale({0.17f, 0.17f});
+        window.draw(woodenPickaxeSprite);
+    }
 }
 
 void Renderer::drawItemOnMouse(sf::RenderWindow& window, const ItemStack& item, const sf::Font& font) {
@@ -251,6 +311,22 @@ void Renderer::drawItemOnMouse(sf::RenderWindow& window, const ItemStack& item, 
             chestSprite.setPosition({worldPosition.x - 12.f, worldPosition.y - 12.f});
             chestSprite.setScale({0.15f, 0.15f});
             window.draw(chestSprite);
+        } else if (itemID == 7) {
+            woodSprite.setPosition({worldPosition.x - 12.f, worldPosition.y - 12.f});
+            woodSprite.setScale({0.15f, 0.15f});
+            window.draw(woodSprite);
+        } else if (itemID == 8) {
+            leafSprite.setPosition({worldPosition.x - 12.f, worldPosition.y - 12.f});
+            leafSprite.setScale({0.15f, 0.15f});
+            window.draw(leafSprite);
+        } else if (itemID == 9) {
+            planksSprite.setPosition({worldPosition.x - 12.f, worldPosition.y - 12.f});
+            planksSprite.setScale({0.15f, 0.15f});
+            window.draw(planksSprite);
+        } else if (itemID == 10) {
+            woodenPickaxeSprite.setPosition({worldPosition.x - 12.f, worldPosition.y - 12.f});
+            woodenPickaxeSprite.setScale({0.15f, 0.15f});
+            window.draw(woodenPickaxeSprite);
         }
 
         sf::Text text(font, std::to_string(item.count), 12);
@@ -333,6 +409,23 @@ void Renderer::drawInventory(sf::RenderWindow& window, Inventory& inventory, con
                 chestSprite.setPosition(slotCenter);
                 chestSprite.setScale({0.20f, 0.20f});
                 window.draw(chestSprite);
+            } else if (itemID == 7) {
+                woodSprite.setPosition(slotCenter);
+                woodSprite.setScale({0.20f, 0.20f});
+                window.draw(woodSprite);
+            }
+            else if (itemID == 8) {
+                leafSprite.setPosition(slotCenter);
+                leafSprite.setScale({0.20f, 0.20f});
+                window.draw(leafSprite);
+            } else if (itemID == 9) {
+                planksSprite.setPosition(slotCenter);
+                planksSprite.setScale({0.20f, 0.20f});
+                window.draw(planksSprite);
+            } else if (itemID == 10) {
+                woodenPickaxeSprite.setPosition(slotCenter - sf::Vector2f(4.f, 4.f));
+                woodenPickaxeSprite.setScale({0.25f, 0.25f});
+                window.draw(woodenPickaxeSprite);
             }
 
             const sf::Vector2f textBottomRight(
@@ -405,6 +498,23 @@ void Renderer::drawItemPlayer(Player& player, ItemStack& item, sf::RenderWindow&
         chestSprite.setPosition(itemPosition);
         chestSprite.setScale({0.10f, 0.10f});
         window.draw(chestSprite);
+    } else if (itemID == 7) {
+        woodSprite.setPosition(itemPosition);
+        woodSprite.setScale({0.10f, 0.10f});
+        window.draw(woodSprite);
     }
-    
+    else if (itemID == 8) {
+        leafSprite.setPosition(itemPosition);
+        leafSprite.setScale({0.10f, 0.10f});
+        window.draw(leafSprite);
+    } else if (itemID == 9) {
+        planksSprite.setPosition(itemPosition);
+        planksSprite.setScale({0.10f, 0.10f});
+        window.draw(planksSprite);
+    } else if (itemID == 10) {
+        woodenPickaxeSprite.setPosition(itemPosition + sf::Vector2f(0.f, -4.f));
+        woodenPickaxeSprite.setScale({0.15f, 0.15f});
+        window.draw(woodenPickaxeSprite);
+    }
+
 }

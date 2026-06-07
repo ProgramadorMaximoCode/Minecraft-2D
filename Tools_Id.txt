@@ -1,0 +1,6 @@
+0 = Hand
+1 = Pickaxe
+2 = Sword
+3 = Axe 
+4 = Shave
+5 = Hoe

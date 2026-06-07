@@ -25,7 +25,6 @@ class Player {
         float getSpeedY() { return speedY; }
         void setSpeedX(float newSpeedX);
         void setSpeedY(float newSpeedY);
-        void jump(float deltaTime, float gravity);
         void setTexture(const sf::Texture& newTexture) {
             playerSprite.setTexture(newTexture);
         }

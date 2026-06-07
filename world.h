@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include "chunk.h"
 
+
 class World {
     public:
         static const int CHUNK_SIZE = Chunk::SIZE;
