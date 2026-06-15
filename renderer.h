@@ -20,6 +20,13 @@ private:
     sf::Sprite leafSprite;
     sf::Sprite planksSprite;
     sf::Sprite woodenPickaxeSprite;
+    sf::Sprite stickSprite;
+    sf::Sprite craftingTableSprite;
+    sf::Sprite woodenAxeSprite;
+    sf::Sprite woodenShovelSprite;
+    sf::Sprite woodenSwordSprite;
+
+    sf::Sprite* getSprite(int itemID);
 
     int frameWidth = 160;
     int frameHeight = 160;
@@ -37,7 +44,12 @@ public:
              sf::Texture& wood,
              sf::Texture& leaf,
              sf::Texture& planks,
-             sf::Texture& woodenPickaxe);
+             sf::Texture& woodenPickaxe,
+             sf::Texture& stick,
+             sf::Texture& craftingTable,
+             sf::Texture& woodenAxe,
+             sf::Texture& woodenShovel,
+             sf::Texture& woodenSword);
 
     void drawWorld(sf::RenderWindow& window, const World& world, int chunkMinX, int chunkMaxX, int chunkMinY, int chunkMaxY, int blockX, int blockY, Player& player);
     void drawPlayer(sf::RenderWindow& window, const Player& player);
@@ -48,4 +60,8 @@ public:
     void drawAnimatedBreaking(sf::RenderWindow& window, int breakingX, int breakingY, int currentFrame);
     void changeTexturePlayer(sf::Texture& newTexture, Player& player);
     void drawItemPlayer(Player& player, ItemStack& item, sf::RenderWindow& window);
+    void drawCraftingGrid2x2(Inventory& craftingGrid, sf::RenderWindow& window, const sf::Font& font);
+    void drawOutputSlot2x2(Inventory& output, sf::RenderWindow& window, const sf::Font& font);
+    void drawCraftingGrid3x3(Inventory& craftingGrid, sf::RenderWindow& window, const sf::Font& font);
+    void drawOutputSlot3x3(Inventory& output, sf::RenderWindow& window, const sf::Font& font);
 };

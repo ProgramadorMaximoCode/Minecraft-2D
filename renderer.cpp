@@ -1,6 +1,6 @@
 #include "renderer.h"
 
-Renderer::Renderer(float tileSize, sf::Texture& dirt, sf::Texture& grass, sf::Texture& stone, sf::Texture& deepSlate, sf::Texture& bedrock, sf::Texture& chest, sf::Texture& animationBreaking, sf::Texture& wood, sf::Texture& leaf, sf::Texture& planks, sf::Texture& woodenPickaxe)
+Renderer::Renderer(float tileSize, sf::Texture& dirt, sf::Texture& grass, sf::Texture& stone, sf::Texture& deepSlate, sf::Texture& bedrock, sf::Texture& chest, sf::Texture& animationBreaking, sf::Texture& wood, sf::Texture& leaf, sf::Texture& planks, sf::Texture& woodenPickaxe, sf::Texture& stick, sf::Texture& craftingTable, sf::Texture& woodenAxe, sf::Texture& woodenShovel, sf::Texture& woodenSword)
     : tileSize(tileSize),
       dirtSprite(dirt),
       grassSprite(grass),
@@ -12,7 +12,12 @@ Renderer::Renderer(float tileSize, sf::Texture& dirt, sf::Texture& grass, sf::Te
       leafSprite(leaf),
       planksSprite(planks),
       animationBreakingSprite(animationBreaking),
-      woodenPickaxeSprite(woodenPickaxe) {
+      woodenPickaxeSprite(woodenPickaxe),
+      stickSprite(stick),
+      craftingTableSprite(craftingTable),
+      woodenAxeSprite(woodenAxe),
+      woodenShovelSprite(woodenShovel),
+      woodenSwordSprite(woodenSword) {
         dirtSprite.setScale({0.25f, 0.25f});
         grassSprite.setScale({0.25f, 0.25f});
         stoneSprite.setScale({0.25f, 0.25f});
@@ -25,6 +30,11 @@ Renderer::Renderer(float tileSize, sf::Texture& dirt, sf::Texture& grass, sf::Te
         animationBreakingSprite.setTextureRect(sf::IntRect({0, 0}, {frameWidth, frameHeight}));
         animationBreakingSprite.setScale({0.25f, 0.25f});
         woodenPickaxeSprite.setScale({0.25f, 0.25f});
+        stickSprite.setScale({0.25f, 0.25f});
+        craftingTableSprite.setScale({0.25f, 0.25f});
+        woodenAxeSprite.setScale({0.25f, 0.25f});
+        woodenShovelSprite.setScale({0.25f, 0.25f});
+        woodenSwordSprite.setScale({0.25f, 0.25f});
 }
 
 void Renderer::drawWorld(sf::RenderWindow& window, const World& world, int chunkMinX, int chunkMaxX, int chunkMinY, int chunkMaxY, int blockX, int blockY, Player& player)
@@ -35,17 +45,11 @@ void Renderer::drawWorld(sf::RenderWindow& window, const World& world, int chunk
     int dx = std::abs(blockX - playerBlockX);
     int dy = std::abs(blockY - playerBlockY);
 
-    dirtSprite.setScale({0.25f, 0.25f});
-    grassSprite.setScale({0.25f, 0.25f});
-    stoneSprite.setScale({0.25f, 0.25f});
-    deepSlateSprite.setScale({0.25f, 0.25f});
-    bedrockSprite.setScale({0.25f, 0.25f});
-    chestSprite.setScale({0.25f, 0.25f});
-    animationBreakingSprite.setScale({0.25f, 0.25f});
-    woodSprite.setScale({0.25f, 0.25f});
-    leafSprite.setScale({0.25f, 0.25f});
-    planksSprite.setScale({0.25f, 0.25f});
-    woodenPickaxeSprite.setScale({0.25f, 0.25f});
+    for(int i = 1; i < 13; ++i) {
+        getSprite(i)->setOrigin({0.f, 0.f});
+        getSprite(i)->setScale({0.25f, 0.25f});
+
+    }
     for (int chunkX = chunkMinX - 2; chunkX <= chunkMaxX + 2; ++chunkX)
     {
         for (int chunkY = chunkMinY - 2; chunkY <= chunkMaxY + 2; ++chunkY)
@@ -68,7 +72,7 @@ void Renderer::drawWorld(sf::RenderWindow& window, const World& world, int chunk
 
                     if(blockX == globalX && blockY == globalY) {
                         if(dx <= 5 && dy <= 5) {
-                            sf::RectangleShape highlight(sf::Vector2f(tileSize, tileSize));
+                            sf::RectangleShape highlight(sf::Vector2f(tileSize - 2, tileSize - 2));
                             highlight.setPosition({globalX * tileSize, globalY * tileSize});
                             highlight.setOutlineColor(sf::Color::Black);
                             highlight.setOutlineThickness(2.f);
@@ -126,7 +130,10 @@ void Renderer::drawWorld(sf::RenderWindow& window, const World& world, int chunk
                             planksSprite.setPosition({globalX * tileSize, globalY * tileSize});
                             window.draw(planksSprite);
                             break;
-                        
+                        case 12:
+                            craftingTableSprite.setPosition({globalX * tileSize, globalY * tileSize});
+                            window.draw(craftingTableSprite);
+                            break;
                     }
                 }
             }
@@ -164,51 +171,16 @@ void Renderer::drawHotbar(sf::RenderWindow& window, Inventory& inventory, const 
                 const sf::Vector2f slotSize = slot.getSize();
 
                 const sf::Vector2f slotCenter(
-                    slotPosition.x + slotSize.x / 9.f,
-                    slotPosition.y + slotSize.y / 9.f
+                    slotPosition.x + slotSize.x / 2.f,
+                    slotPosition.y + slotSize.y / 2.f
                 );
 
-                int itemID = item.itemID;
-                if (itemID == 1) {
-                    grassSprite.setPosition(slotCenter);
-                    grassSprite.setScale({0.20f, 0.20f});
-                    window.draw(grassSprite);
-                } else if (itemID == 2) {
-                    dirtSprite.setPosition(slotCenter);
-                    dirtSprite.setScale({0.20f, 0.20f});
-                    window.draw(dirtSprite);
-                } else if (itemID == 3) {
-                    stoneSprite.setPosition(slotCenter);
-                    stoneSprite.setScale({0.20f, 0.20f});
-                    window.draw(stoneSprite);
-                } else if (itemID == 4) {
-                    deepSlateSprite.setPosition(slotCenter);
-                    deepSlateSprite.setScale({0.20f, 0.20f});
-                    window.draw(deepSlateSprite);
-                } else if (itemID == 5) {
-                    bedrockSprite.setPosition(slotCenter);
-                    bedrockSprite.setScale({0.20f, 0.20f});
-                    window.draw(bedrockSprite);
-                } else if (itemID == 6) {
-                    chestSprite.setPosition(slotCenter);
-                    chestSprite.setScale({0.20f, 0.20f});
-                    window.draw(chestSprite);
-                } else if (itemID == 7) {
-                    woodSprite.setPosition(slotCenter);
-                    woodSprite.setScale({0.20f, 0.20f});
-                    window.draw(woodSprite);
-                } else if (itemID == 8) {
-                    leafSprite.setPosition(slotCenter);
-                    leafSprite.setScale({0.20f, 0.20f});
-                    window.draw(leafSprite);
-                } else if (itemID == 9) {
-                    planksSprite.setPosition(slotCenter);
-                    planksSprite.setScale({0.20f, 0.20f});
-                    window.draw(planksSprite);
-                } else if (itemID == 10) {
-                    woodenPickaxeSprite.setPosition(slotCenter - sf::Vector2f(4.f, 4.f));
-                    woodenPickaxeSprite.setScale({0.25f, 0.25f});
-                    window.draw(woodenPickaxeSprite);
+                sf::Sprite* itemSprite = getSprite(item.itemID);
+                if (itemSprite) {
+                    itemSprite->setOrigin({itemSprite->getLocalBounds().position.x + itemSprite->getLocalBounds().size.x / 2.f, itemSprite->getLocalBounds().position.y + itemSprite->getLocalBounds().size.y / 2.f});
+                    itemSprite->setPosition(slotCenter);
+                    itemSprite->setScale({0.20f, 0.20f});
+                    window.draw(*itemSprite);
                 }
 
                 const sf::Vector2f textBottomRight(
@@ -232,52 +204,12 @@ void Renderer::drawHotbar(sf::RenderWindow& window, Inventory& inventory, const 
 }
 
 void Renderer::drawItemEntity(sf::RenderWindow& window, const ItemEntity& item, int itemID) {
-    if(itemID == 1) {
-        grassSprite.setPosition(item.getPosition());
-        grassSprite.setScale({0.12f, 0.12f});
-        window.draw(grassSprite);
-    } else if(itemID == 2) {
-        dirtSprite.setPosition(item.getPosition());
-        dirtSprite.setScale({0.12f, 0.12f});
-        window.draw(dirtSprite);
-    } else if(itemID == 3) {
-        stoneSprite.setPosition(item.getPosition());
-        stoneSprite.setScale({0.12f, 0.12f});
-        window.draw(stoneSprite);
-    }
-    else if(itemID == 4) {
-        deepSlateSprite.setPosition(item.getPosition());
-        deepSlateSprite.setScale({0.12f, 0.12f});
-        window.draw(deepSlateSprite);
-    }
-    else if(itemID == 5) {
-        bedrockSprite.setPosition(item.getPosition());
-        bedrockSprite.setScale({0.12f, 0.12f});
-        window.draw(bedrockSprite);
-    } else if (itemID == 6) {
-        chestSprite.setPosition(item.getPosition());
-        chestSprite.setScale({0.12f, 0.12f});
-        window.draw(chestSprite);
-    }
-    else if(itemID == 7) {
-        woodSprite.setPosition(item.getPosition());
-        woodSprite.setScale({0.12f, 0.12f});
-        window.draw(woodSprite);
-    }
-    else if(itemID == 8) {
-        leafSprite.setPosition(item.getPosition());
-        leafSprite.setScale({0.12f, 0.12f});
-        window.draw(leafSprite);
-    }
-    else if(itemID == 9) {
-        planksSprite.setPosition(item.getPosition());
-        planksSprite.setScale({0.12f, 0.12f});
-        window.draw(planksSprite);
-    }
-    else if(itemID == 10) {
-        woodenPickaxeSprite.setPosition(item.getPosition() + sf::Vector2f(0.f, -4.f));
-        woodenPickaxeSprite.setScale({0.17f, 0.17f});
-        window.draw(woodenPickaxeSprite);
+    sf::Sprite* itemSprite = getSprite(item.itemID);
+    if (itemSprite) {
+        itemSprite->setOrigin({0.f, 0.f});
+        itemSprite->setPosition(item.position);
+        itemSprite->setScale({0.12f, 0.12f});
+        window.draw(*itemSprite);
     }
 }
 
@@ -286,47 +218,12 @@ void Renderer::drawItemOnMouse(sf::RenderWindow& window, const ItemStack& item, 
         const sf::Vector2f mousePosition = static_cast<sf::Vector2f>(sf::Mouse::getPosition(window));
         const sf::Vector2f worldPosition = window.mapPixelToCoords(static_cast<sf::Vector2i>(mousePosition));
 
-        int itemID = item.itemID;
-        if (itemID == 1) {
-            grassSprite.setPosition({worldPosition.x - 12.f, worldPosition.y - 12.f});
-            grassSprite.setScale({0.15f, 0.15f});
-            window.draw(grassSprite);
-        } else if (itemID == 2) {
-            dirtSprite.setPosition({worldPosition.x - 12.f, worldPosition.y - 12.f});
-            dirtSprite.setScale({0.15f, 0.15f});
-            window.draw(dirtSprite);
-        } else if (itemID == 3) {
-            stoneSprite.setPosition({worldPosition.x - 12.f, worldPosition.y - 12.f});
-            stoneSprite.setScale({0.15f, 0.15f});
-            window.draw(stoneSprite);
-        } else if (itemID == 4) {
-            deepSlateSprite.setPosition({worldPosition.x - 12.f, worldPosition.y - 12.f});
-            deepSlateSprite.setScale({0.15f, 0.15f});
-            window.draw(deepSlateSprite);
-        } else if (itemID == 5) {
-            bedrockSprite.setPosition({worldPosition.x - 12.f, worldPosition.y - 12.f});
-            bedrockSprite.setScale({0.15f, 0.15f});
-            window.draw(bedrockSprite);
-        } else if (itemID == 6) {
-            chestSprite.setPosition({worldPosition.x - 12.f, worldPosition.y - 12.f});
-            chestSprite.setScale({0.15f, 0.15f});
-            window.draw(chestSprite);
-        } else if (itemID == 7) {
-            woodSprite.setPosition({worldPosition.x - 12.f, worldPosition.y - 12.f});
-            woodSprite.setScale({0.15f, 0.15f});
-            window.draw(woodSprite);
-        } else if (itemID == 8) {
-            leafSprite.setPosition({worldPosition.x - 12.f, worldPosition.y - 12.f});
-            leafSprite.setScale({0.15f, 0.15f});
-            window.draw(leafSprite);
-        } else if (itemID == 9) {
-            planksSprite.setPosition({worldPosition.x - 12.f, worldPosition.y - 12.f});
-            planksSprite.setScale({0.15f, 0.15f});
-            window.draw(planksSprite);
-        } else if (itemID == 10) {
-            woodenPickaxeSprite.setPosition({worldPosition.x - 12.f, worldPosition.y - 12.f});
-            woodenPickaxeSprite.setScale({0.15f, 0.15f});
-            window.draw(woodenPickaxeSprite);
+        sf::Sprite* itemSprite = getSprite(item.itemID);
+        if (itemSprite) {
+            itemSprite->setOrigin({0.f, 0.f});
+            itemSprite->setPosition({worldPosition.x - 12.f, worldPosition.y - 12.f});
+            itemSprite->setScale({0.15f, 0.15f});
+            window.draw(*itemSprite);
         }
 
         sf::Text text(font, std::to_string(item.count), 12);
@@ -344,8 +241,6 @@ void Renderer::drawItemOnMouse(sf::RenderWindow& window, const ItemStack& item, 
 }
 
 void Renderer::drawInventory(sf::RenderWindow& window, Inventory& inventory, const sf::Font& font, bool isChest) {
-
-
     constexpr int columns = 9;
     constexpr float slotSize = 40.f;
     constexpr float slotSpacing = 5.f;
@@ -360,7 +255,14 @@ void Renderer::drawInventory(sf::RenderWindow& window, Inventory& inventory, con
     const float startY = isChest ? hotbarY - distanceFromHotbar * 2 - totalHeight * 2 : hotbarY - totalHeight - distanceFromHotbar;
 
     sf::RectangleShape slot(sf::Vector2f(slotSize, slotSize));
-
+    sf::RectangleShape background(sf::Vector2f(totalWidth + 80.f, totalHeight + 260.f));
+    background.setPosition({startX - 40.f, startY - 200.f});
+    background.setFillColor(sf::Color(50, 50, 50, 200));
+    background.setOutlineColor(sf::Color(200, 200, 200));
+    background.setOutlineThickness(2.f);
+    if(!isChest) {
+        window.draw(background);
+    }
     for (int i = 0; i < inventory.size(); i++) {
         slot.setPosition({
             startX + (i % columns) * slotStep,
@@ -380,53 +282,18 @@ void Renderer::drawInventory(sf::RenderWindow& window, Inventory& inventory, con
             const sf::Vector2f slotSize = slot.getSize();
 
             const sf::Vector2f slotCenter(
-                slotPosition.x + slotSize.x / 9.f,
-                slotPosition.y + slotSize.y / 9.f
+                slotPosition.x + slotSize.x / 2.f,
+                slotPosition.y + slotSize.y / 2.f
             );
 
             int itemID = item.itemID;
-            if (itemID == 1) {
-                grassSprite.setPosition(slotCenter);
-                grassSprite.setScale({0.20f, 0.20f});
-                window.draw(grassSprite);
-            } else if (itemID == 2) {
-                dirtSprite.setPosition(slotCenter);
-                dirtSprite.setScale({0.20f, 0.20f});
-                window.draw(dirtSprite);
-            } else if (itemID == 3) {
-                stoneSprite.setPosition(slotCenter);
-                stoneSprite.setScale({0.20f, 0.20f});
-                window.draw(stoneSprite);
-            } else if (itemID == 4) {
-                deepSlateSprite.setPosition(slotCenter);
-                deepSlateSprite.setScale({0.20f, 0.20f});
-                window.draw(deepSlateSprite);
-            } else if (itemID == 5) {
-                bedrockSprite.setPosition(slotCenter);
-                bedrockSprite.setScale({0.20f, 0.20f});
-                window.draw(bedrockSprite);
-            } else if (itemID == 6) {
-                chestSprite.setPosition(slotCenter);
-                chestSprite.setScale({0.20f, 0.20f});
-                window.draw(chestSprite);
-            } else if (itemID == 7) {
-                woodSprite.setPosition(slotCenter);
-                woodSprite.setScale({0.20f, 0.20f});
-                window.draw(woodSprite);
-            }
-            else if (itemID == 8) {
-                leafSprite.setPosition(slotCenter);
-                leafSprite.setScale({0.20f, 0.20f});
-                window.draw(leafSprite);
-            } else if (itemID == 9) {
-                planksSprite.setPosition(slotCenter);
-                planksSprite.setScale({0.20f, 0.20f});
-                window.draw(planksSprite);
-            } else if (itemID == 10) {
-                woodenPickaxeSprite.setPosition(slotCenter - sf::Vector2f(4.f, 4.f));
-                woodenPickaxeSprite.setScale({0.25f, 0.25f});
-                window.draw(woodenPickaxeSprite);
-            }
+                sf::Sprite* itemSprite = getSprite(itemID);
+                if (itemSprite) {
+                    itemSprite->setOrigin({itemSprite->getLocalBounds().position.x + itemSprite->getLocalBounds().size.x / 2.f, itemSprite->getLocalBounds().position.y + itemSprite->getLocalBounds().size.y / 2.f});
+                    itemSprite->setPosition(slotCenter);
+                    itemSprite->setScale({0.20f, 0.20f});
+                    window.draw(*itemSprite);
+                }
 
             const sf::Vector2f textBottomRight(
                 slotPosition.x + slotSize.x - 4.f,
@@ -470,51 +337,250 @@ void Renderer::changeTexturePlayer(sf::Texture& newTexture, Player& player) {
 }
 
 void Renderer::drawItemPlayer(Player& player, ItemStack& item, sf::RenderWindow& window) {
+
     const sf::Vector2f playerPosition = player.getPosition();
     const sf::Vector2f itemPosition(playerPosition.x + 15.f, playerPosition.y + 40.f);
 
     int itemID = item.itemID;
-    if (itemID == 1) {
-        grassSprite.setPosition(itemPosition);
-        grassSprite.setScale({0.10f, 0.10f});
-        window.draw(grassSprite);
-    } else if (itemID == 2) {
-        dirtSprite.setPosition(itemPosition);
-        dirtSprite.setScale({0.10f, 0.10f});
-        window.draw(dirtSprite);
-    } else if (itemID == 3) {
-        stoneSprite.setPosition(itemPosition);
-        stoneSprite.setScale({0.10f, 0.10f});
-        window.draw(stoneSprite);
-    } else if (itemID == 4) {
-        deepSlateSprite.setPosition(itemPosition);
-        deepSlateSprite.setScale({0.10f, 0.10f});
-        window.draw(deepSlateSprite);
-    } else if (itemID == 5) {
-        bedrockSprite.setPosition(itemPosition);
-        bedrockSprite.setScale({0.10f, 0.10f});
-        window.draw(bedrockSprite);
-    } else if (itemID == 6) {
-        chestSprite.setPosition(itemPosition);
-        chestSprite.setScale({0.10f, 0.10f});
-        window.draw(chestSprite);
-    } else if (itemID == 7) {
-        woodSprite.setPosition(itemPosition);
-        woodSprite.setScale({0.10f, 0.10f});
-        window.draw(woodSprite);
-    }
-    else if (itemID == 8) {
-        leafSprite.setPosition(itemPosition);
-        leafSprite.setScale({0.10f, 0.10f});
-        window.draw(leafSprite);
-    } else if (itemID == 9) {
-        planksSprite.setPosition(itemPosition);
-        planksSprite.setScale({0.10f, 0.10f});
-        window.draw(planksSprite);
-    } else if (itemID == 10) {
-        woodenPickaxeSprite.setPosition(itemPosition + sf::Vector2f(0.f, -4.f));
-        woodenPickaxeSprite.setScale({0.15f, 0.15f});
-        window.draw(woodenPickaxeSprite);
+    sf::Sprite* itemSprite = getSprite(itemID);
+    if (itemSprite) {
+        itemSprite->setOrigin({0.f, 0.f});
+        itemSprite->setPosition(itemPosition);
+        itemSprite->setScale({0.10f, 0.10f});
+        window.draw(*itemSprite);
     }
 
+}
+
+void Renderer::drawCraftingGrid2x2(Inventory& craftingGrid, sf::RenderWindow& window, const sf::Font& font) {
+    constexpr float slotSize = 40.f;
+    const float startX = window.getSize().x / 2.f  + 50.f;
+    const float startY = window.getSize().y / 2.f + 10.f;
+
+    sf::RectangleShape slot(sf::Vector2f(slotSize, slotSize));
+    slot.setFillColor(sf::Color(80, 80, 80, 220));
+    slot.setOutlineColor(sf::Color(180, 180, 180));
+    slot.setOutlineThickness(2.f);
+    for(int i = 0; i < 2; ++i) {
+        for(int j = 0; j < 2; ++j) {
+            slot.setPosition({startX + j * (slotSize + 5.f), startY + i * (slotSize + 5.f)});
+            window.draw(slot);
+
+            ItemStack& item = craftingGrid.getSlot(i * 2 + j);
+
+            if (!item.isEmpty()) {
+                const sf::Vector2f slotPosition = slot.getPosition();
+                const sf::Vector2f slotSize = slot.getSize();
+
+                const sf::Vector2f slotCenter(
+                    slotPosition.x + slotSize.x / 9.f,
+                    slotPosition.y + slotSize.y / 9.f
+                );
+
+                int itemID = item.itemID;
+                sf::Sprite* itemSprite = getSprite(itemID);
+                if (itemSprite) {
+                    itemSprite->setOrigin({0.f, 0.f});
+                    itemSprite->setPosition(slotCenter);
+                    itemSprite->setScale({0.20f, 0.20f});
+                    window.draw(*itemSprite);
+                }
+
+                const sf::Vector2f textBottomRight(
+                    slotPosition.x + slotSize.x - 4.f,
+                    slotPosition.y + slotSize.y - 3.f
+                );
+
+                sf::Text text(font, std::to_string(item.count), 20);
+                text.setFillColor(sf::Color::White);
+                sf::FloatRect textBounds = text.getLocalBounds();
+                text.setOrigin({
+                    textBounds.position.x + textBounds.size.x,
+                    textBounds.position.y + textBounds.size.y
+                });
+                text.setPosition(textBottomRight);
+                if(item.count >= 2) {
+                    window.draw(text);
+                }
+            }
+        }
+    }
+}
+
+void Renderer::drawOutputSlot2x2(Inventory& output, sf::RenderWindow& window, const sf::Font& font) {
+    constexpr float slotSize = 40.f;
+    const float startX = window.getSize().x / 2.f + 55.f;
+    const float startY = window.getSize().y / 2.f + 10.f;
+
+    sf::RectangleShape slot(sf::Vector2f(slotSize, slotSize));
+    slot.setFillColor(sf::Color(80, 80, 80, 220));
+    slot.setOutlineColor(sf::Color(180, 180, 180));
+    slot.setOutlineThickness(2.f);
+    slot.setPosition({startX + 2 * (slotSize + 15.f), startY + slotSize / 2.f});
+    window.draw(slot);
+
+    ItemStack& item = output.getSlot(0);
+
+    if (!item.isEmpty()) {
+        const sf::Vector2f slotPosition = slot.getPosition();
+        const sf::Vector2f slotSize = slot.getSize();
+
+        const sf::Vector2f slotCenter(
+            slotPosition.x + slotSize.x / 9.f,
+            slotPosition.y + slotSize.y / 9.f
+        );
+        int itemID = item.itemID;
+        sf::Sprite* itemSprite = getSprite(itemID);
+        if (itemSprite) {
+            itemSprite->setOrigin({0.f, 0.f});
+            itemSprite->setPosition(slotCenter);
+            itemSprite->setScale({0.20f, 0.20f});
+            window.draw(*itemSprite);
+        }
+           
+        const sf::Vector2f textBottomRight(
+            slotPosition.x + slotSize.x - 4.f,
+            slotPosition.y + slotSize.y - 3.f
+        );
+
+        sf::Text text(font, std::to_string(item.count), 20);
+        text.setFillColor(sf::Color::White);
+        sf::FloatRect textBounds = text.getLocalBounds();
+        text.setOrigin({
+            textBounds.position.x + textBounds.size.x,
+            textBounds.position.y + textBounds.size.y
+        });
+        text.setPosition(textBottomRight);
+        if(item.count >= 2) {
+            window.draw(text);
+        }
+    }
+}
+
+void Renderer::drawCraftingGrid3x3(Inventory& craftingGrid, sf::RenderWindow& window, const sf::Font& font) {
+    constexpr float slotSize = 40.f;
+    const float startX = window.getSize().x / 2.f + 10.f;
+    const float startY = window.getSize().y / 2.f - 10.f;
+
+    sf::RectangleShape slot(sf::Vector2f(slotSize, slotSize));
+    slot.setFillColor(sf::Color(80, 80, 80, 220));
+    slot.setOutlineColor(sf::Color(180, 180, 180));
+    slot.setOutlineThickness(2.f);
+    for(int i = 0; i < 3; ++i) {
+        for(int j = 0; j < 3; ++j) {
+            slot.setPosition({startX + j * (slotSize + 5.f), startY + i * (slotSize + 5.f)});
+            window.draw(slot);
+
+            ItemStack& item = craftingGrid.getSlot(i * 3 + j);
+
+            if (!item.isEmpty()) {
+                const sf::Vector2f slotPosition = slot.getPosition();
+                const sf::Vector2f slotSize = slot.getSize();
+
+                const sf::Vector2f slotCenter(
+                    slotPosition.x + slotSize.x / 9.f,
+                    slotPosition.y + slotSize.y / 9.f
+                );
+
+                int itemID = item.itemID;
+                sf::Sprite* itemSprite = getSprite(itemID);
+
+                if (itemSprite) {
+                    itemSprite->setOrigin({0.f, 0.f});
+                    itemSprite->setPosition(slotCenter);
+                    itemSprite->setScale({0.20f, 0.20f});
+                    window.draw(*itemSprite);
+                }
+
+                const sf::Vector2f textBottomRight(
+                    slotPosition.x + slotSize.x - 4.f,
+                    slotPosition.y + slotSize.y - 3.f
+                );
+
+                sf::Text text(font, std::to_string(item.count), 20);
+                text.setFillColor(sf::Color::White);
+                sf::FloatRect textBounds = text.getLocalBounds();
+                text.setOrigin({
+                    textBounds.position.x + textBounds.size.x,
+                    textBounds.position.y + textBounds.size.y
+                });
+                text.setPosition(textBottomRight);
+                if(item.count >= 2) {
+                    window.draw(text);
+                }
+            }
+        }
+    }
+}
+
+void Renderer::drawOutputSlot3x3(Inventory& output, sf::RenderWindow& window, const sf::Font& font) {
+    constexpr float slotSize = 40.f;
+    const float startX = window.getSize().x / 2.f + 20.f;
+    const float startY = window.getSize().y / 2.f + 15.f;
+
+    sf::RectangleShape slot(sf::Vector2f(slotSize, slotSize));
+    slot.setFillColor(sf::Color(80, 80, 80, 220));
+    slot.setOutlineColor(sf::Color(180, 180, 180));
+    slot.setOutlineThickness(2.f);
+    slot.setPosition({startX + 3 * (slotSize + 15.f), startY + slotSize / 2.f});
+    window.draw(slot);
+
+    ItemStack& item = output.getSlot(0);
+
+    if (!item.isEmpty()) {
+        const sf::Vector2f slotPosition = slot.getPosition();
+        const sf::Vector2f slotSize = slot.getSize();
+
+        const sf::Vector2f slotCenter(
+            slotPosition.x + slotSize.x / 9.f,
+            slotPosition.y + slotSize.y / 9.f
+        );
+
+        int itemID = item.itemID;
+        sf::Sprite* itemSprite = getSprite(itemID);
+        if (itemSprite) {
+            itemSprite->setOrigin({0.f, 0.f});
+            itemSprite->setPosition(slotCenter);
+            itemSprite->setScale({0.20f, 0.20f});
+            window.draw(*itemSprite);
+        }
+
+        const sf::Vector2f textBottomRight(
+            slotPosition.x + slotSize.x - 4.f,
+            slotPosition.y + slotSize.y - 3.f
+        );
+
+        sf::Text text(font, std::to_string(item.count), 20);
+        text.setFillColor(sf::Color::White);
+        sf::FloatRect textBounds = text.getLocalBounds();
+        text.setOrigin({
+            textBounds.position.x + textBounds.size.x,
+            textBounds.position.y + textBounds.size.y
+        });
+        text.setPosition(textBottomRight);
+        if(item.count >= 2) {
+            window.draw(text);
+        }
+    }
+}
+
+sf::Sprite* Renderer::getSprite(int itemID) {
+    switch(itemID) {
+        case 1:  return &grassSprite;
+        case 2:  return &dirtSprite;
+        case 3:  return &stoneSprite;
+        case 4:  return &deepSlateSprite;
+        case 5:  return &bedrockSprite;
+        case 6:  return &chestSprite;
+        case 7:  return &woodSprite;
+        case 8:  return &leafSprite;
+        case 9:  return &planksSprite;
+        case 10: return &woodenPickaxeSprite;
+        case 11: return &stickSprite;
+        case 12: return &craftingTableSprite;
+        case 13: return &woodenAxeSprite;
+        case 14: return &woodenShovelSprite;
+        case 15: return &woodenSwordSprite;
+        default: return nullptr;
+    }
 }

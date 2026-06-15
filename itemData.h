@@ -20,8 +20,13 @@ enum ItemsName {
         CHEST,
         WOOD,
         LEAF,
-        PANKS,
-        WOODEN_PICKAXE
+        PLANKS,
+        WOODEN_PICKAXE,
+        STICK,
+        CRAFTING_TABLE,
+        WOODEN_AXE,
+        WOODEN_SHOVEL,
+        WOODEN_SWORD
 };
 
 struct ItemData {
