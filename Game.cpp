@@ -44,7 +44,8 @@ int Game::run() {
     // TEXTURAS
     //********* 
 
-    Texture dirt, grass, stone, deepslate, bedrock, chest, steve, steve2, animationBreaking, wood, leaf, planks, woodenPickaxe, stick, craftingTable, woodenAxe, woodenShovel, woodenSword;
+    Texture dirt, grass, stone, deepslate, bedrock, chest, steve, steve2, animationBreaking, wood, leaf, 
+    planks, woodenPickaxe, stick, craftingTable, woodenAxe, woodenShovel, woodenSword, stonePickaxe, stoneAxe, stoneShovel, stoneSword, woodenSlab, cobblestone;
 
     if (!dirt.loadFromFile("C:\\Programacion\\SFML\\Minecraft 2D\\Assets\\Dirt.png")) return 1;
     if (!grass.loadFromFile("C:\\Programacion\\SFML\\Minecraft 2D\\Assets\\Grass.png")) return 1;
@@ -64,26 +65,38 @@ int Game::run() {
     if (!woodenAxe.loadFromFile("C:\\Programacion\\SFML\\Minecraft 2D\\Assets\\WoodenAxe.png")) return 1;
     if (!woodenShovel.loadFromFile("C:\\Programacion\\SFML\\Minecraft 2D\\Assets\\WoodenShovel.png")) return 1;
     if (!woodenSword.loadFromFile("C:\\Programacion\\SFML\\Minecraft 2D\\Assets\\WoodenSword.png")) return 1;
+    if (!stonePickaxe.loadFromFile("C:\\Programacion\\SFML\\Minecraft 2D\\Assets\\StonePickaxe.png")) return 1;
+    if (!stoneAxe.loadFromFile("C:\\Programacion\\SFML\\Minecraft 2D\\Assets\\StoneAxe.png")) return 1;
+    if (!stoneShovel.loadFromFile("C:\\Programacion\\SFML\\Minecraft 2D\\Assets\\StoneShovel.png")) return 1;
+    if (!stoneSword.loadFromFile("C:\\Programacion\\SFML\\Minecraft 2D\\Assets\\StoneSword.png")) return 1;
+    if (!woodenSlab.loadFromFile("C:\\Programacion\\SFML\\Minecraft 2D\\Assets\\WoodenSlab.png")) return 1;
+    if (!cobblestone.loadFromFile("C:\\Programacion\\SFML\\Minecraft 2D\\Assets\\Cobblestone.png")) return 1;
     int currentFrame = 0;
     int totalFrames = 9;
 
     std::vector<ItemData> itemData = {
-        {0, AIR, nullptr, false, 0, false, NONE, 0, 0, 0.0f, NONE},
-        {1, GRASS, &grass, true, 64, true, NONE, 0, 1, 0.6f, SHOVEL},
-        {2, DIRT, &dirt, true, 64, true, NONE, 0, 1, 0.5f, SHOVEL},
-        {3, STONE, &stone, true, 64, true, NONE, 0, 1, 1.5f, PICKAXE},
-        {4, DEEPSLATE, &deepslate, true, 64, true, NONE, 0, 1, 3.0f, PICKAXE},
-        {5, BEDROCK, &bedrock, true, 64, true, NONE, 0, 1, 9999999.9f, NONE},
-        {6, CHEST, &chest, false, 1, true, NONE, 0, 1, 2.5f , AXE},
-        {7, WOOD, &wood, true , 64 ,true ,NONE ,0 , 1, 2.0f , AXE},
-        {8 , LEAF ,&leaf ,true ,64 ,true ,NONE ,0 ,1, 0.3f , HOE},
-        {9 , PLANKS ,&planks ,true ,64 ,true ,NONE ,0 ,1, 2.0f , AXE},
-        {10, WOODEN_PICKAXE, &woodenPickaxe, false, 1, false, PICKAXE, 1, 2, 60.0f, NONE},
-        {11, STICK, &stick, true, 64, false, NONE, 0, 1, 0.0f, NONE},
-        {12, CRAFTING_TABLE, &craftingTable, true, 64, true, NONE, 0, 1, 2.5f, AXE},
-        {13, WOODEN_AXE, &woodenAxe, false, 1, false, AXE, 1, 2, 60.0f, NONE},
-        {14, WOODEN_SHOVEL, &woodenShovel, false, 1, false, SHOVEL, 1, 2, 60.0f, NONE},
-        {15, WOODEN_SWORD, &woodenSword, false, 1, false, SWORD, 1, 2, 60.0f, NONE}
+        {0, AIR, nullptr, false, 0, false, NONE, 0, 0, 0.0f, NONE, {0, 0}},
+        {1, GRASS, &grass, true, 64, true, NONE, 0, 1, 0.6f, SHOVEL, {1, 1}},
+        {2, DIRT, &dirt, true, 64, true, NONE, 0, 1, 0.5f, SHOVEL, {2, 1}},
+        {3, STONE, &stone, true, 64, true, NONE, 0, 1, 1.5f, PICKAXE, {21, 1}},
+        {4, DEEPSLATE, &deepslate, true, 64, true, NONE, 0, 1, 3.0f, PICKAXE, {4, 1}},
+        {5, BEDROCK, &bedrock, true, 64, true, NONE, 0, 1, 9999999.9f, NONE, {5, 1}},
+        {6, CHEST, &chest, false, 1, true, NONE, 0, 1, 2.5f , AXE, {6, 1}},
+        {7, WOOD, &wood, true , 64 ,true ,NONE ,0 , 1, 2.0f , AXE, {7, 1}},
+        {8 , LEAF ,&leaf ,true ,64 ,true ,NONE ,0 ,1, 0.3f , HOE, {8, 1}},
+        {9 , PLANKS ,&planks ,true ,64 ,true ,NONE ,0 ,1, 2.0f , AXE, {9, 1}},
+        {10, WOODEN_PICKAXE, &woodenPickaxe, false, 1, false, PICKAXE, 1, 2, 60.0f, NONE, {10, 1}},
+        {11, STICK, &stick, true, 64, false, NONE, 0, 1, 0.0f, NONE, {11, 1}},
+        {12, CRAFTING_TABLE, &craftingTable, true, 64, true, NONE, 0, 1, 2.5f, AXE, {12, 1}},
+        {13, WOODEN_AXE, &woodenAxe, false, 1, false, AXE, 1, 2, 60.0f, NONE, {13, 1}},
+        {14, WOODEN_SHOVEL, &woodenShovel, false, 1, false, SHOVEL, 1, 2, 60.0f, NONE, {0, 0}},
+        {15, WOODEN_SWORD, &woodenSword, false, 1, false, SWORD, 1, 2, 60.0f, NONE, {0, 0}},
+        {16, STONE_PICKAXE, &stonePickaxe, false, 1, false, PICKAXE, 2, 3, 132.0f, NONE, {0, 0}},
+        {17, STONE_AXE, &stoneAxe, false, 1, false, AXE, 2, 3, 132.0f, NONE, {0, 0}},
+        {18, STONE_SHOVEL, &stoneShovel, false, 1, false, SHOVEL, 2, 3, 132.0f, NONE, {0, 0}},
+        {19, STONE_SWORD, &stoneSword, false, 1, false, SWORD, 2, 3, 132.0f , NONE, {0, 0}},
+        {20, WOODEN_SLAB, &woodenSlab, true, 64, true, NONE, 0, 1, 2.0f, AXE, {20, 1}},
+        {21, COBBLESTONE, &cobblestone, true, 64, true, NONE, 0, 1, 1.5f, PICKAXE, {21, 1}}
     };
 
     auto getItemData = [&](int itemID) -> const ItemData* {
@@ -101,7 +114,7 @@ int Game::run() {
     float tileSize = dirt.getSize().x * 0.25f;
     float gravity = 500.f;
 
-    Renderer renderer(tileSize, dirt, grass, stone, deepslate, bedrock, chest, animationBreaking, wood, leaf, planks, woodenPickaxe, stick, craftingTable, woodenAxe, woodenShovel, woodenSword);
+    Renderer renderer(tileSize, dirt, grass, stone, deepslate, bedrock, chest, animationBreaking, wood, leaf, planks, woodenPickaxe, stick, craftingTable, woodenAxe, woodenShovel, woodenSword, stonePickaxe, stoneAxe, stoneShovel, stoneSword, woodenSlab, cobblestone);
 
     world.generate();
     world.setBlock(0, 70, 6);
@@ -196,8 +209,10 @@ int Game::run() {
     };
 
     Inventory hotbar(9);
-    //hotbar.addItem(12, 1);
-    //hotbar.addItem(7, 64);
+    hotbar.addItem(12, 1);
+    hotbar.addItem(7, 64);
+    hotbar.addItem(3, 64);
+    hotbar.addItem(20, 64);
     Inventory inventory(27);
     ItemStack cursorItem;
     int selectedSlot = 0;
@@ -282,6 +297,51 @@ int Game::run() {
             },
             {15, 1}
         },
+        {
+            STONE_PICKAXE,
+            {
+                { {21, 1}, {21, 1}, {21, 1} },
+                { {0, 0}, {11, 1}, {0, 0} },
+                { {0, 0}, {11, 1}, {0, 0} }
+            },
+            {16, 1}
+        },
+        {
+            STONE_AXE,
+            {
+                { {21, 1}, {21, 1}, {0, 0} },
+                { {21, 1}, {11, 1}, {0, 0} },
+                { {0, 0}, {11, 1}, {0, 0} }
+            },
+            {17, 1}
+        },
+        {
+            STONE_SHOVEL,
+            {
+                { {0, 0}, {21, 1}, {0, 0} },
+                { {0, 0}, {11, 1}, {0, 0} },
+                { {0, 0}, {11, 1}, {0, 0} }
+            },
+            {18, 1}
+        },
+        {
+            STONE_SWORD,
+            {
+                { {0, 0}, {21, 1}, {0, 0} },
+                { {0, 0}, {21, 1}, {0, 0} },
+                { {0, 0}, {11, 1}, {0, 0} }
+            },
+            {19 ,1}
+        },
+        {
+            WOODEN_SLAB,
+            {
+                { {9, 1}, {9, 1}, {9, 1} },
+                { {0, 0}, {0, 0}, {0, 0} },
+                { {0, 0}, {0, 0}, {0, 0} }
+            },
+            {20 ,6}
+        }
     };
 
     Recipe currentRecipe2x2;
@@ -560,7 +620,7 @@ int Game::run() {
         }
 
         // Herramienta correcta
-        return (hardness * 30.0f) / toolSpeed / 20.0f;
+        return (hardness * 25.0f) / (toolSpeed * 1.25f) / 20.0f;
     };
     
     auto breakBlock = [&](int blockX, int blockY, float dt) {
@@ -614,14 +674,15 @@ int Game::run() {
 
                 if(breakTime >= requiredTime) {
                     int block = world.getBlock(blockX, blockY);
+                    ItemData* blockItemData = const_cast<ItemData*>(getItemData(block));
 
                     if(block == 6) {
                         dropChestContents(blockX, blockY);
                     }
 
                     items.push_back(ItemEntity{
-                        block,
-                        1,
+                        blockItemData->output.itemID,
+                        blockItemData->output.count,
                         {blockX * tileSize, blockY * tileSize},
                         {0.f, -100.f}
                     });
@@ -745,53 +806,58 @@ int Game::run() {
                         onLeftClick(*clickedSlot.inventory, clickedSlot.index);
                     } else if(clickedSlot.inventory == &output2x2 && clickedSlot.index != -1) {
                         if(!output2x2.getSlot(0).isEmpty() && isCraftingResultValid2x2) {
+                            bool hasCrafted = false;
                             if(!hasCursorItem) {
                                 cursorItem = output2x2.getSlot(0);
                                 output2x2.getSlot(0) = {};
                                 hasCursorItem = true;
-                            } else if(cursorItem.itemID == output2x2.getSlot(0).itemID && cursorItem.count < (64 - output2x2.getSlot(0).count)) {
+                                hasCrafted = true;
+                            } else if(cursorItem.itemID == output2x2.getSlot(0).itemID && cursorItem.count <= (64 - output2x2.getSlot(0).count)) {
                                 cursorItem.count += output2x2.getSlot(0).count;
                                 output2x2.getSlot(0) = {};
-                            } else {
-                                std::swap(cursorItem, output2x2.getSlot(0));
+                                hasCrafted = true;
                             }
-                            for(int i = 0; i < 2; ++i) {
-                                for(int j = 0; j < 2; ++j) {
-                                    ItemStack& slot = craftingSpace2x2.getSlot(i * 2 + j);
-                                    if(!slot.isEmpty()) {
-                                        slot.count -= currentRecipe2x2.pattern[i][j].count;
-                                        if(slot.count <= 0) {
-                                            slot = {};
+                            if(hasCrafted) {
+                                for(int i = 0; i < 2; ++i) {
+                                    for(int j = 0; j < 2; ++j) {
+                                        ItemStack& slot = craftingSpace2x2.getSlot(i * 2 + j);
+                                        if(!slot.isEmpty()) {
+                                            slot.count -= currentRecipe2x2.pattern[i][j].count;
+                                            if(slot.count <= 0) {
+                                                slot = {};
+                                            }
                                         }
                                     }
-                                }
 
+                                }
                             }
                         }
 
                     } else if(clickedSlot.inventory == &output3x3 && clickedSlot.index != -1) {
                         if(!output3x3.getSlot(0).isEmpty() && isCraftingResultValid3x3) {
+                            bool hasCrafted = false;
                             if(!hasCursorItem) {
                                 cursorItem = output3x3.getSlot(0);
                                 output3x3.getSlot(0) = {};
                                 hasCursorItem = true;
-                            } else if(cursorItem.itemID == output3x3.getSlot(0).itemID && cursorItem.count < (64 - output3x3.getSlot(0).count)) {
+                                hasCrafted = true;
+                            } else if(cursorItem.itemID == output3x3.getSlot(0).itemID && cursorItem.count <= (64 - output3x3.getSlot(0).count)) {
                                 cursorItem.count += output3x3.getSlot(0).count;
                                 output3x3.getSlot(0) = {};
-                            } else {
-                                std::swap(cursorItem, output3x3.getSlot(0));
+                                hasCrafted = true;
                             }
-                            for(int i = 0; i < 3; ++i) {
-                                for(int j = 0; j < 3; ++j) {
-                                    ItemStack& slot = craftingSpace3x3.getSlot(i * 3 + j);
-                                    if(!slot.isEmpty()) {
-                                        slot.count -= currentRecipe3x3.pattern[i][j].count;
-                                        if(slot.count <= 0) {
-                                            slot = {};
+                            if(hasCrafted) {
+                                for(int i = 0; i < 3; ++i) {
+                                    for(int j = 0; j < 3; ++j) {
+                                        ItemStack& slot = craftingSpace3x3.getSlot(i * 3 + j);
+                                        if(!slot.isEmpty()) {
+                                            slot.count -= currentRecipe3x3.pattern[i][j].count;
+                                            if(slot.count <= 0) {
+                                                slot = {};
+                                            }
                                         }
                                     }
                                 }
-
                             }
                         }
 

@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include "ItemStack.h"
 
 enum toolTypes{
     NONE,
@@ -26,7 +27,13 @@ enum ItemsName {
         CRAFTING_TABLE,
         WOODEN_AXE,
         WOODEN_SHOVEL,
-        WOODEN_SWORD
+        WOODEN_SWORD,
+        STONE_PICKAXE,
+        STONE_AXE,
+        STONE_SHOVEL,
+        STONE_SWORD,
+        WOODEN_SLAB,
+        COBBLESTONE
 };
 
 struct ItemData {
@@ -41,17 +48,19 @@ struct ItemData {
     int toolSpeed;
     float hardness;
     toolTypes requiredTool;
+    ItemStack output;
 
-    ItemData(int id, ItemsName itemName, const sf::Texture* itemTexture, bool stackable, int maxStack, bool block, toolTypes tool, int level, int speed,float hard, toolTypes required)
-        : itemID(id),
-          name(itemName),
-          texture(itemTexture),
-          isStackable(stackable),
-          maxStackSize(maxStack),
-          isBlock(block),
-          toolType(tool),
-          toolLevel(level),
-          toolSpeed(speed),
-          hardness(hard),
-          requiredTool(required) {}
+        ItemData(int id, ItemsName itemName, const sf::Texture* itemTexture, bool stackable, int maxStack, bool block, toolTypes tool, int level, int speed,float hard, toolTypes required, const ItemStack& out)
+                : itemID(id),
+                    name(itemName),
+                    texture(itemTexture),
+                    isStackable(stackable),
+                    maxStackSize(maxStack),
+                    isBlock(block),
+                    toolType(tool),
+                    toolLevel(level),
+                    toolSpeed(speed),
+                    hardness(hard),
+                    requiredTool(required),
+                    output(out) {}
 };

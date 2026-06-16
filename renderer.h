@@ -25,6 +25,12 @@ private:
     sf::Sprite woodenAxeSprite;
     sf::Sprite woodenShovelSprite;
     sf::Sprite woodenSwordSprite;
+    sf::Sprite stonePickaxeSprite;
+    sf::Sprite stoneAxeSprite;
+    sf::Sprite stoneShovelSprite;
+    sf::Sprite stoneSwordSprite;
+    sf::Sprite woodenSlabSprite;
+    sf::Sprite cobblestoneSprite;
 
     sf::Sprite* getSprite(int itemID);
 
@@ -49,7 +55,13 @@ public:
              sf::Texture& craftingTable,
              sf::Texture& woodenAxe,
              sf::Texture& woodenShovel,
-             sf::Texture& woodenSword);
+             sf::Texture& woodenSword,
+             sf::Texture& stonePickaxe,
+             sf::Texture& stoneAxe,
+             sf::Texture& stoneShovel,
+             sf::Texture& stoneSword,
+             sf::Texture& woodenSlab,
+             sf::Texture& cobblestone);
 
     void drawWorld(sf::RenderWindow& window, const World& world, int chunkMinX, int chunkMaxX, int chunkMinY, int chunkMaxY, int blockX, int blockY, Player& player);
     void drawPlayer(sf::RenderWindow& window, const Player& player);

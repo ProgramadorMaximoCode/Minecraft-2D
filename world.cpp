@@ -154,6 +154,13 @@ bool World::isSolid(int type) const {
     }
 }
 sf::FloatRect World::getBlockHitbox(int x, int y, float tileSize) const {
+    if(getBlock(x, y) == 20) {
+        return sf::FloatRect(
+        sf::Vector2f(static_cast<float>(x) * tileSize, (static_cast<float>(y) * tileSize) + tileSize / 2),
+        sf::Vector2f(tileSize, tileSize / 2)
+    );
+
+    }
     return sf::FloatRect(
         sf::Vector2f(static_cast<float>(x) * tileSize, static_cast<float>(y) * tileSize),
         sf::Vector2f(tileSize, tileSize)

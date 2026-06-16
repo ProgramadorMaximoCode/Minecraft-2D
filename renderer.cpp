@@ -1,6 +1,6 @@
 #include "renderer.h"
 
-Renderer::Renderer(float tileSize, sf::Texture& dirt, sf::Texture& grass, sf::Texture& stone, sf::Texture& deepSlate, sf::Texture& bedrock, sf::Texture& chest, sf::Texture& animationBreaking, sf::Texture& wood, sf::Texture& leaf, sf::Texture& planks, sf::Texture& woodenPickaxe, sf::Texture& stick, sf::Texture& craftingTable, sf::Texture& woodenAxe, sf::Texture& woodenShovel, sf::Texture& woodenSword)
+Renderer::Renderer(float tileSize, sf::Texture& dirt, sf::Texture& grass, sf::Texture& stone, sf::Texture& deepSlate, sf::Texture& bedrock, sf::Texture& chest, sf::Texture& animationBreaking, sf::Texture& wood, sf::Texture& leaf, sf::Texture& planks, sf::Texture& woodenPickaxe, sf::Texture& stick, sf::Texture& craftingTable, sf::Texture& woodenAxe, sf::Texture& woodenShovel, sf::Texture& woodenSword, sf::Texture& stonePickaxe, sf::Texture& stoneAxe, sf::Texture& stoneShovel, sf::Texture& stoneSword, sf::Texture& woodenSlab, sf::Texture& cobblestone)
     : tileSize(tileSize),
       dirtSprite(dirt),
       grassSprite(grass),
@@ -17,7 +17,14 @@ Renderer::Renderer(float tileSize, sf::Texture& dirt, sf::Texture& grass, sf::Te
       craftingTableSprite(craftingTable),
       woodenAxeSprite(woodenAxe),
       woodenShovelSprite(woodenShovel),
-      woodenSwordSprite(woodenSword) {
+      woodenSwordSprite(woodenSword),
+      stonePickaxeSprite(stonePickaxe),
+      stoneAxeSprite(stoneAxe),
+      stoneShovelSprite(stoneShovel),
+      stoneSwordSprite(stoneSword),
+      woodenSlabSprite(woodenSlab),
+      cobblestoneSprite(cobblestone)
+      {
         dirtSprite.setScale({0.25f, 0.25f});
         grassSprite.setScale({0.25f, 0.25f});
         stoneSprite.setScale({0.25f, 0.25f});
@@ -35,6 +42,12 @@ Renderer::Renderer(float tileSize, sf::Texture& dirt, sf::Texture& grass, sf::Te
         woodenAxeSprite.setScale({0.25f, 0.25f});
         woodenShovelSprite.setScale({0.25f, 0.25f});
         woodenSwordSprite.setScale({0.25f, 0.25f});
+        stonePickaxeSprite.setScale({0.25f, 0.25f});
+        stoneAxeSprite.setScale({0.25f, 0.25f});
+        stoneShovelSprite.setScale({0.25f, 0.25f});
+        stoneSwordSprite.setScale({0.25f, 0.25f});
+        woodenSlabSprite.setScale({0.25f, 0.25f});
+        cobblestoneSprite.setScale({0.25f, 0.25f});
 }
 
 void Renderer::drawWorld(sf::RenderWindow& window, const World& world, int chunkMinX, int chunkMaxX, int chunkMinY, int chunkMaxY, int blockX, int blockY, Player& player)
@@ -45,7 +58,7 @@ void Renderer::drawWorld(sf::RenderWindow& window, const World& world, int chunk
     int dx = std::abs(blockX - playerBlockX);
     int dy = std::abs(blockY - playerBlockY);
 
-    for(int i = 1; i < 13; ++i) {
+    for(int i = 1; i <= 21; ++i) {
         getSprite(i)->setOrigin({0.f, 0.f});
         getSprite(i)->setScale({0.25f, 0.25f});
 
@@ -83,57 +96,16 @@ void Renderer::drawWorld(sf::RenderWindow& window, const World& world, int chunk
 
                     }
 
-                    switch (block)
-                    {
-                        case 0:
-                            break;
+                    
+                    for(int i = 1; i <= 21; ++i) {
+                        if(block == i) {
+                            sf::Sprite* sprite = getSprite(i);
+                            if(sprite) {
+                                sprite->setPosition({globalX * tileSize, globalY * tileSize});
+                                window.draw(*sprite);
+                            }
+                        }
 
-                        case 2:
-                            dirtSprite.setPosition({globalX * tileSize, globalY * tileSize});
-                            window.draw(dirtSprite);
-                            break;
-
-                        case 1:
-                            grassSprite.setPosition({globalX * tileSize, globalY * tileSize});
-                            window.draw(grassSprite);
-                            break;
-
-                        case 3:
-                            stoneSprite.setPosition({globalX * tileSize, globalY * tileSize});
-                            window.draw(stoneSprite);
-                            break;
-
-                        case 4:
-                            deepSlateSprite.setPosition({globalX * tileSize, globalY * tileSize});
-                            window.draw(deepSlateSprite);
-                            break;
-
-                        case 5:
-                            bedrockSprite.setPosition({globalX * tileSize, globalY * tileSize});
-                            window.draw(bedrockSprite);
-                            break;
-
-                        case 6:
-                            chestSprite.setPosition({globalX * tileSize, globalY * tileSize});
-                            window.draw(chestSprite);
-                            break;
-
-                        case 7:
-                            woodSprite.setPosition({globalX * tileSize, globalY * tileSize});
-                            window.draw(woodSprite);
-                            break;
-                        case 8:
-                            leafSprite.setPosition({globalX * tileSize, globalY * tileSize});
-                            window.draw(leafSprite);
-                            break;
-                        case 9:
-                            planksSprite.setPosition({globalX * tileSize, globalY * tileSize});
-                            window.draw(planksSprite);
-                            break;
-                        case 12:
-                            craftingTableSprite.setPosition({globalX * tileSize, globalY * tileSize});
-                            window.draw(craftingTableSprite);
-                            break;
                     }
                 }
             }
@@ -581,6 +553,12 @@ sf::Sprite* Renderer::getSprite(int itemID) {
         case 13: return &woodenAxeSprite;
         case 14: return &woodenShovelSprite;
         case 15: return &woodenSwordSprite;
+        case 16: return &stonePickaxeSprite;
+        case 17: return &stoneAxeSprite;
+        case 18: return &stoneShovelSprite;
+        case 19: return &stoneSwordSprite;
+        case 20: return &woodenSlabSprite;
+        case 21: return &cobblestoneSprite;
         default: return nullptr;
     }
 }
