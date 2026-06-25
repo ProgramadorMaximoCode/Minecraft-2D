@@ -45,7 +45,9 @@ int Game::run() {
     //********* 
 
     Texture dirt, grass, stone, deepslate, bedrock, chest, steve, steve2, animationBreaking, wood, leaf, 
-    planks, woodenPickaxe, stick, craftingTable, woodenAxe, woodenShovel, woodenSword, stonePickaxe, stoneAxe, stoneShovel, stoneSword, woodenSlab, cobblestone;
+    planks, woodenPickaxe, stick, craftingTable, woodenAxe, woodenShovel, woodenSword, stonePickaxe, stoneAxe, 
+    stoneShovel, stoneSword, woodenSlab, cobblestone, coal, coalOreStone, coalOreDeepslate, ironIngot, rawIron, 
+    ironOreStone, ironOreDeepslate, oven;
 
     if (!dirt.loadFromFile("C:\\Programacion\\SFML\\Minecraft 2D\\Assets\\Dirt.png")) return 1;
     if (!grass.loadFromFile("C:\\Programacion\\SFML\\Minecraft 2D\\Assets\\Grass.png")) return 1;
@@ -71,6 +73,14 @@ int Game::run() {
     if (!stoneSword.loadFromFile("C:\\Programacion\\SFML\\Minecraft 2D\\Assets\\StoneSword.png")) return 1;
     if (!woodenSlab.loadFromFile("C:\\Programacion\\SFML\\Minecraft 2D\\Assets\\WoodenSlab.png")) return 1;
     if (!cobblestone.loadFromFile("C:\\Programacion\\SFML\\Minecraft 2D\\Assets\\Cobblestone.png")) return 1;
+    if (!coal.loadFromFile("C:\\Programacion\\SFML\\Minecraft 2D\\Assets\\Coal.png")) return 1; 
+    if (!coalOreStone.loadFromFile("C:\\Programacion\\SFML\\Minecraft 2D\\Assets\\CoalOreStone.png")) return 1; 
+    if (!coalOreDeepslate.loadFromFile("C:\\Programacion\\SFML\\Minecraft 2D\\Assets\\CoalOreDeepslate.png")) return 1; 
+    if (!ironIngot.loadFromFile("C:\\Programacion\\SFML\\Minecraft 2D\\Assets\\IronIngot.png")) return 1; 
+    if (!rawIron.loadFromFile("C:\\Programacion\\SFML\\Minecraft 2D\\Assets\\RawIron.png")) return 1; 
+    if (!ironOreStone.loadFromFile("C:\\Programacion\\SFML\\Minecraft 2D\\Assets\\IronOreStone.png")) return 1; 
+    if (!ironOreDeepslate.loadFromFile("C:\\Programacion\\SFML\\Minecraft 2D\\Assets\\IronOreDeepslate.png")) return 1; 
+    if (!oven.loadFromFile("C:\\Programacion\\SFML\\Minecraft 2D\\Assets\\Oven.png")) return 1; 
     int currentFrame = 0;
     int totalFrames = 9;
 
@@ -96,7 +106,15 @@ int Game::run() {
         {18, STONE_SHOVEL, &stoneShovel, false, 1, false, SHOVEL, 2, 3, 132.0f, NONE, {0, 0}},
         {19, STONE_SWORD, &stoneSword, false, 1, false, SWORD, 2, 3, 132.0f , NONE, {0, 0}},
         {20, WOODEN_SLAB, &woodenSlab, true, 64, true, NONE, 0, 1, 2.0f, AXE, {20, 1}},
-        {21, COBBLESTONE, &cobblestone, true, 64, true, NONE, 0, 1, 1.5f, PICKAXE, {21, 1}}
+        {21, COBBLESTONE, &cobblestone, true, 64, true, NONE, 0, 1, 1.5f, PICKAXE, {21, 1}},
+        {22, COAL, &coal, true, 64, false, NONE, 0, 1, 0.0f, NONE, {0, 0}},
+        {23, COAL_ORE_STONE, &coalOreStone, true, 64, true, NONE, 0, 1, 3.0f, PICKAXE, {22, 1}},
+        {24, COAL_ORE_DEEPSLATE, &coalOreDeepslate, true, 64, true, NONE, 0, 1, 4.5f, PICKAXE, {22, 1}},
+        {25, IRON_INGOT, &ironIngot, true, 64, false, NONE, 0, 1, 0.0f, NONE, {0, 0}},
+        {26, RAW_IRON, &rawIron, true, 64, false, NONE, 0, 1, 0.0f, NONE, {0, 0}},
+        {27, IRON_ORE_STONE, &ironOreStone, true, 64, true, NONE, 0, 1, 3.0f, PICKAXE, {26, 1}},
+        {28, IRON_ORE_DEEPSLATE, &ironOreDeepslate, true, 64, true, NONE, 0, 1, 4.5f, PICKAXE, {26, 1}},
+        {29, OVEN, &oven, true, 64, true, NONE, 0, 1, 3.5f, PICKAXE, {29, 1}}
     };
 
     auto getItemData = [&](int itemID) -> const ItemData* {
@@ -114,7 +132,7 @@ int Game::run() {
     float tileSize = dirt.getSize().x * 0.25f;
     float gravity = 500.f;
 
-    Renderer renderer(tileSize, dirt, grass, stone, deepslate, bedrock, chest, animationBreaking, wood, leaf, planks, woodenPickaxe, stick, craftingTable, woodenAxe, woodenShovel, woodenSword, stonePickaxe, stoneAxe, stoneShovel, stoneSword, woodenSlab, cobblestone);
+    Renderer renderer(tileSize, dirt, grass, stone, deepslate, bedrock, chest, animationBreaking, wood, leaf, planks, woodenPickaxe, stick, craftingTable, woodenAxe, woodenShovel, woodenSword, stonePickaxe, stoneAxe, stoneShovel, stoneSword, woodenSlab, cobblestone, coal, coalOreStone, coalOreDeepslate, ironIngot, rawIron, ironOreStone, ironOreDeepslate, oven);
 
     world.generate();
     world.setBlock(0, 70, 6);
@@ -213,6 +231,9 @@ int Game::run() {
     hotbar.addItem(7, 64);
     hotbar.addItem(3, 64);
     hotbar.addItem(20, 64);
+    hotbar.addItem(16, 1);
+    hotbar.addItem(18, 1);
+    hotbar.addItem(29, 1);
     Inventory inventory(27);
     ItemStack cursorItem;
     int selectedSlot = 0;
@@ -341,8 +362,63 @@ int Game::run() {
                 { {0, 0}, {0, 0}, {0, 0} }
             },
             {20 ,6}
+        }, 
+        {
+            OVEN,
+            {
+                { {21, 1}, {21, 1}, {21, 1} },
+                { {21, 1}, {0, 0}, {21, 1} },
+                { {21, 1}, {21, 1}, {21, 1}}
+            },
+            {29, 1}
         }
     };
+    
+    struct RecipeOven {
+        ItemsName recipe;
+        int input;
+        int output;
+    };
+    struct FuelOven {
+        ItemsName item;
+        int itemID;
+        float numberObjects;
+    };
+    struct Oven {
+        int x, y;
+        Inventory inventory;
+
+        float progress = 0.f;
+        float fuelTime = 0.f;
+        float maxProgress = 5.f;
+        float maxFuelTime = 10.f;
+        float remainingSmelts = 0.f;
+
+        Oven()
+        : x(0),
+          y(0),
+          inventory(3)
+        {}
+
+        Oven(int ovenX, int ovenY)
+        : x(ovenX),
+          y(ovenY),
+          inventory(3)
+        {}
+
+    };
+    
+    std::vector<RecipeOven> recipesOven {
+        {IRON_INGOT, 26, 25}
+    };
+    std::vector<FuelOven> fuels {
+        {COAL, 22, 10.0f}
+    };
+    
+    std::map<std::pair<int, int>, Oven> ovens;
+
+    bool isOvenOpen = false;
+    Oven* selectedOven = nullptr;
 
     Recipe currentRecipe2x2;
     Recipe currentRecipe3x3;
@@ -475,8 +551,13 @@ int Game::run() {
         } else if(nInventory == 6) {
             startX = 585.f;
             startY = 395.f;
+        } else if(nInventory == 7) {
+            const float panelWidth = 300.f;
+            const float panelHeight = 180.f;
+            startX = (static_cast<float>(window.getSize().x) - panelWidth) / 2.f;
+            startY = (static_cast<float>(window.getSize().y) - panelHeight) / 2.f;
         }
-        if(nInventory != 3 && nInventory != 4 && nInventory != 5 && nInventory != 6) {
+        if(nInventory != 3 && nInventory != 4 && nInventory != 5 && nInventory != 6 && nInventory != 7) {
             for (int i = 0; i < inventory.size(); i++) {
                 sf::FloatRect slotBounds(
                     {startX + (i % columns) * slotStep, startY + (i / columns) * slotStep},
@@ -533,11 +614,42 @@ int Game::run() {
             if(slotBounds.contains((sf::Vector2f)mousePos)) {
                 return 0;
             }
+        } else if(nInventory == 7) {
+            sf::FloatRect inputSlot(
+                {startX + 62.f, startY + 84.f},
+                {slotSize, slotSize}
+            );
+            sf::FloatRect fuelSlot(
+                {startX + 62.f, startY + 164.f},
+                {slotSize, slotSize}
+            );
+            sf::FloatRect outputSlot(
+                {startX + 205.f, startY + 125.f},
+                {slotSize + 5, slotSize + 5}
+            );
+
+            if(inputSlot.contains((sf::Vector2f)mousePos)) {
+                return 0;
+            }
+            if(fuelSlot.contains((sf::Vector2f)mousePos)) {
+                return 1;
+            }
+            if(outputSlot.contains((sf::Vector2f)mousePos)) {
+                return 2;
+            }
         }
         return -1; 
     };
     
     auto getClickedSlot = [&](sf::Vector2i mousePos, sf::RenderWindow& window) {
+        if(isOvenOpen && selectedOven != nullptr) {
+            int ovenIndex = getSlotIndex(mousePos, window, selectedOven->inventory, 7);
+
+            if(ovenIndex != -1) {
+                return ClickedSlot{&selectedOven->inventory, ovenIndex};
+            }
+        }
+
         if(isSpace3x3Open) {
             int craftingIndex = getSlotIndex(mousePos, window, craftingSpace3x3, 5);
             int outputIndex = getSlotIndex(mousePos, window, output3x3, 6);
@@ -757,6 +869,69 @@ int Game::run() {
         }
         return Recipe{};
     };  
+    
+    auto updateOven = [&](float dt) {
+        for(auto& pair : ovens) {
+            Oven& oven = pair.second;
+
+            RecipeOven* actualRecipe = nullptr;
+            FuelOven* actualFuel = nullptr;
+
+            for(auto& recipe : recipesOven) {
+                if(oven.inventory.getSlot(0).itemID == recipe.input && oven.inventory.getSlot(0).count > 0) {
+                    actualRecipe = &recipe;
+                    break;
+                }
+            }
+            for(auto& fuel : fuels) {
+                if(oven.inventory.getSlot(1).itemID == fuel.itemID && oven.inventory.getSlot(1).count > 0) {
+                    actualFuel = &fuel;
+                    break;
+                }
+            }
+
+            if(actualRecipe == nullptr)
+                continue;
+
+            if(oven.remainingSmelts <= 0) {
+                if(actualFuel == nullptr)
+                    continue;
+
+                oven.inventory.getSlot(1).count--;
+
+                oven.remainingSmelts = actualFuel->numberObjects;
+
+                if(oven.inventory.getSlot(1).count <= 0) {
+                    oven.inventory.getSlot(1).itemID = 0;
+                    oven.inventory.getSlot(1).count = 0;
+                }
+            }
+
+            oven.progress += dt;
+
+            if(oven.progress >= oven.maxProgress) {
+                oven.progress = 0.f;
+
+                oven.inventory.getSlot(0).count--;
+
+                if(oven.inventory.getSlot(0).count <= 0) {
+                    oven.inventory.getSlot(0).itemID = 0;
+                    oven.inventory.getSlot(0).count = 0;
+                }
+
+                auto& outputSlot = oven.inventory.getSlot(2);
+
+                if(outputSlot.count == 0) {
+                    outputSlot.itemID = actualRecipe->output;
+                }
+
+                outputSlot.count++;
+
+                oven.remainingSmelts--;
+            }
+        }
+    };
+
     while (window.isOpen()) {
         sf::Vector2i mousePixel = sf::Mouse::getPosition(window);
         sf::Vector2f mouseWorld = window.mapPixelToCoords(mousePixel, view);
@@ -792,17 +967,38 @@ int Game::run() {
                     } else if(isSpace3x3Open) {
                         isSpace3x3Open = false;
                         isInventoryOpen = false;
+
+                        for(int i = 0; i < 3; i++) {
+                            for(int j = 0; j < 3; j++) {
+                                if(!craftingSpace3x3.getSlot(i * 3 + j).isEmpty()) {
+                                    for(int k = 0; k <= hotbar.size(); k++) {
+                                        if(hotbar.getSlot(k).isEmpty()) {
+                                            hotbar.getSlot(k) = craftingSpace3x3.getSlot(i * 3 + j);
+                                            craftingSpace3x3.getSlot(i * 3 + j) = {};
+                                        } else if((hotbar.getSlot(k).itemID == craftingSpace3x3.getSlot(i * 3 + j).itemID) && (hotbar.getSlot(k).count + craftingSpace3x3.getSlot(i * 3 + j).count <= 64)) {
+                                            hotbar.getSlot(k).count += craftingSpace3x3.getSlot(i * 3 + j).count;
+                                            craftingSpace3x3.getSlot(i * 3 + j) = {};
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } else if(isOvenOpen) {
+                        isOvenOpen = false;
+                        isInventoryOpen = false;
                     }
                     else {
                         isInventoryOpen = !isInventoryOpen;
                     }
+                } else if(Keyboard::isKeyPressed(Keyboard::Key::F3)) {
+                    world.generate();
                 }
             }
 
             if (const auto* mouseButton = event->getIf<Event::MouseButtonPressed>()) {
                 if (mouseButton->button == Mouse::Button::Left) {
                     ClickedSlot clickedSlot = getClickedSlot(mousePixel, window);
-                    if(clickedSlot.index != -1 && clickedSlot.inventory != nullptr && clickedSlot.inventory != &output2x2 && clickedSlot.inventory != &output3x3) {
+                    if(clickedSlot.index != -1 && clickedSlot.inventory != nullptr && clickedSlot.inventory != &output2x2 && clickedSlot.inventory != &output3x3 && !(clickedSlot.inventory == &selectedOven->inventory && clickedSlot.index == 2) ) {
                         onLeftClick(*clickedSlot.inventory, clickedSlot.index);
                     } else if(clickedSlot.inventory == &output2x2 && clickedSlot.index != -1) {
                         if(!output2x2.getSlot(0).isEmpty() && isCraftingResultValid2x2) {
@@ -861,6 +1057,17 @@ int Game::run() {
                             }
                         }
 
+                    } else if(clickedSlot.inventory == &selectedOven->inventory && clickedSlot.index != -1) {
+                        if(!selectedOven->inventory.getSlot(2).isEmpty()) {
+                            if(!hasCursorItem) {
+                                cursorItem = selectedOven->inventory.getSlot(2);
+                                selectedOven->inventory.getSlot(2) = {};
+                                hasCursorItem = true;
+                            } else if(cursorItem.itemID == selectedOven->inventory.getSlot(2).itemID && cursorItem.count <= (64 - selectedOven->inventory.getSlot(2).count)) {
+                                cursorItem.count += selectedOven->inventory.getSlot(2).count;
+                                selectedOven->inventory.getSlot(2) = {};
+                            }
+                        }
                     }
                     else if(world.getBlock(blockX, blockY) == 0 && isInventoryOpen) {
                         if(hasCursorItem) {
@@ -883,6 +1090,15 @@ int Game::run() {
                         }
                     } else if(world.getBlock(blockX, blockY) == 12) {
                         isSpace3x3Open = !isSpace3x3Open;
+                    } else if(world.getBlock(blockX, blockY) == 29) {
+                        isOvenOpen = !isOvenOpen;
+                        if(isOvenOpen) {
+                            selectedOven = &ovens[{blockX, blockY}];
+                            selectedOven->x = blockX;
+                            selectedOven->y = blockY;
+                        } else {
+                            selectedOven = nullptr;
+                        }
                     }
                     else if(!player.getHitbox().findIntersection(world.getBlockHitbox(blockX, blockY, tileSize))) {
                         if(selectedSlot != -1) {
@@ -903,6 +1119,8 @@ int Game::run() {
                                 }
                             }
                         }
+                    } else if(world.getBlock(blockX, blockY) == 6) {
+
                     }
                 }
             }
@@ -995,6 +1213,8 @@ int Game::run() {
             }
         }
 
+        updateOven(dt);
+
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num1)) selectedSlot = 0;
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num2)) selectedSlot = 1;
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num3)) selectedSlot = 2;
@@ -1032,24 +1252,6 @@ int Game::run() {
 
         }
 
-        if(!items.empty()) {
-            for (const auto& item : items) {
-                sf::RectangleShape itemHitboxR(item.getHitbox().size);
-                itemHitboxR.setPosition(item.getHitbox().position);
-                itemHitboxR.setFillColor(sf::Color::Transparent);
-                itemHitboxR.setOutlineColor(sf::Color::Yellow);
-                itemHitboxR.setOutlineThickness(1.f);
-                window.draw(itemHitboxR);
-            }
-        }
-
-        sf::RectangleShape hitboxR(player.getHitbox().size);
-        hitboxR.setPosition(player.getHitbox().position);
-        hitboxR.setFillColor(sf::Color::Transparent);
-        hitboxR.setOutlineColor(sf::Color::Red);
-        hitboxR.setOutlineThickness(1.f);
-        window.draw(hitboxR);
-
         if(breakingX != -1 && breakingY != -1) {
             renderer.drawAnimatedBreaking(window, breakingX, breakingY, currentFrame);
         }
@@ -1057,7 +1259,7 @@ int Game::run() {
         window.setView(window.getDefaultView());
 
         renderer.drawHotbar(window, hotbar, font, selectedSlot);
-        if (isInventoryOpen && !isChestOpen && !isSpace3x3Open) {
+        if (isInventoryOpen && !isChestOpen && !isSpace3x3Open && !isOvenOpen) {
             renderer.drawInventory(window, inventory, font, false);
             renderer.drawHotbar(window, hotbar, font, selectedSlot);
             renderer.drawCraftingGrid2x2(craftingSpace2x2, window, font);
@@ -1076,11 +1278,18 @@ int Game::run() {
             renderer.drawCraftingGrid3x3(craftingSpace3x3, window, font);
             renderer.drawOutputSlot3x3(output3x3, window, font);
             isInventoryOpen = true;
-        }
+        } 
+        if(isOvenOpen) {
+            renderer.drawInventory(window, inventory, font, false);
+            renderer.drawHotbar(window, hotbar, font, selectedSlot);
+            renderer.drawOven(window, selectedOven->inventory, font, selectedOven->progress, selectedOven->maxProgress, selectedOven->fuelTime, selectedOven->maxFuelTime);
+            isInventoryOpen = true;
+        }  
         
         if (!cursorItem.isEmpty()) {
             renderer.drawItemOnMouse(window, cursorItem, font);
         } 
+        
         window.display();
     }
 

@@ -33,7 +33,15 @@ enum ItemsName {
         STONE_SHOVEL,
         STONE_SWORD,
         WOODEN_SLAB,
-        COBBLESTONE
+        COBBLESTONE,
+        COAL, 
+        COAL_ORE_STONE,
+        COAL_ORE_DEEPSLATE,
+        IRON_INGOT, 
+        RAW_IRON, 
+        IRON_ORE_STONE, 
+        IRON_ORE_DEEPSLATE, 
+        OVEN,
 };
 
 struct ItemData {

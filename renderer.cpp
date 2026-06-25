@@ -1,6 +1,6 @@
 #include "renderer.h"
 
-Renderer::Renderer(float tileSize, sf::Texture& dirt, sf::Texture& grass, sf::Texture& stone, sf::Texture& deepSlate, sf::Texture& bedrock, sf::Texture& chest, sf::Texture& animationBreaking, sf::Texture& wood, sf::Texture& leaf, sf::Texture& planks, sf::Texture& woodenPickaxe, sf::Texture& stick, sf::Texture& craftingTable, sf::Texture& woodenAxe, sf::Texture& woodenShovel, sf::Texture& woodenSword, sf::Texture& stonePickaxe, sf::Texture& stoneAxe, sf::Texture& stoneShovel, sf::Texture& stoneSword, sf::Texture& woodenSlab, sf::Texture& cobblestone)
+Renderer::Renderer(float tileSize, sf::Texture& dirt, sf::Texture& grass, sf::Texture& stone, sf::Texture& deepSlate, sf::Texture& bedrock, sf::Texture& chest, sf::Texture& animationBreaking, sf::Texture& wood, sf::Texture& leaf, sf::Texture& planks, sf::Texture& woodenPickaxe, sf::Texture& stick, sf::Texture& craftingTable, sf::Texture& woodenAxe, sf::Texture& woodenShovel, sf::Texture& woodenSword, sf::Texture& stonePickaxe, sf::Texture& stoneAxe, sf::Texture& stoneShovel, sf::Texture& stoneSword, sf::Texture& woodenSlab, sf::Texture& cobblestone, sf::Texture& coal, sf::Texture& coalOreStone, sf::Texture& coalOreDeepslate, sf::Texture& ironIngot, sf::Texture& rawIron, sf::Texture& ironOreStone, sf::Texture& ironOreDeepslate, sf::Texture& oven)
     : tileSize(tileSize),
       dirtSprite(dirt),
       grassSprite(grass),
@@ -23,7 +23,15 @@ Renderer::Renderer(float tileSize, sf::Texture& dirt, sf::Texture& grass, sf::Te
       stoneShovelSprite(stoneShovel),
       stoneSwordSprite(stoneSword),
       woodenSlabSprite(woodenSlab),
-      cobblestoneSprite(cobblestone)
+      cobblestoneSprite(cobblestone),
+      coalSprite(coal),
+      coalOreStoneSprite(coalOreStone),
+      coalOreDeepslateSprite(coalOreDeepslate),
+      ironIngotSprite(ironIngot),
+      rawIronSprite(rawIron),
+      ironOreStoneSprite(ironOreStone),
+      ironOreDeepslateSprite(ironOreDeepslate),
+      ovenSprite(oven)
       {
         dirtSprite.setScale({0.25f, 0.25f});
         grassSprite.setScale({0.25f, 0.25f});
@@ -48,6 +56,14 @@ Renderer::Renderer(float tileSize, sf::Texture& dirt, sf::Texture& grass, sf::Te
         stoneSwordSprite.setScale({0.25f, 0.25f});
         woodenSlabSprite.setScale({0.25f, 0.25f});
         cobblestoneSprite.setScale({0.25f, 0.25f});
+        coalSprite.setScale({0.25f, 0.25f});
+        coalOreStoneSprite.setScale({0.25f, 0.25f});
+        coalOreDeepslateSprite.setScale({0.25f, 0.25f});
+        ironIngotSprite.setScale({0.25f, 0.25f});
+        rawIronSprite.setScale({0.25f, 0.25f});
+        ironOreStoneSprite.setScale({0.25f, 0.25f});
+        ironOreDeepslateSprite.setScale({0.25f, 0.25f});
+        ovenSprite.setScale({0.25f, 0.25f});
 }
 
 void Renderer::drawWorld(sf::RenderWindow& window, const World& world, int chunkMinX, int chunkMaxX, int chunkMinY, int chunkMaxY, int blockX, int blockY, Player& player)
@@ -58,7 +74,7 @@ void Renderer::drawWorld(sf::RenderWindow& window, const World& world, int chunk
     int dx = std::abs(blockX - playerBlockX);
     int dy = std::abs(blockY - playerBlockY);
 
-    for(int i = 1; i <= 21; ++i) {
+    for(int i = 1; i <= 29; ++i) {
         getSprite(i)->setOrigin({0.f, 0.f});
         getSprite(i)->setScale({0.25f, 0.25f});
 
@@ -97,7 +113,7 @@ void Renderer::drawWorld(sf::RenderWindow& window, const World& world, int chunk
                     }
 
                     
-                    for(int i = 1; i <= 21; ++i) {
+                    for(int i = 1; i <= 29; ++i) {
                         if(block == i) {
                             sf::Sprite* sprite = getSprite(i);
                             if(sprite) {
@@ -536,6 +552,185 @@ void Renderer::drawOutputSlot3x3(Inventory& output, sf::RenderWindow& window, co
     }
 }
 
+void Renderer::drawOven(sf::RenderWindow& window, Inventory& ovenInventory, const sf::Font& font, float progress, float maxProgress, float fuelTime, float maxFuelTime) {
+    constexpr float slotSize = 40.f;
+    constexpr float panelWidth = 300.f;
+    constexpr float panelHeight = 180.f;
+
+    const float startX = (static_cast<float>(window.getSize().x) - panelWidth) / 2.f;
+    const float startY = (static_cast<float>(window.getSize().y) - panelHeight) / 2.f;
+
+    const sf::Vector2f inputPos(startX + 62.f, startY + 84.f);
+    const sf::Vector2f fuelPos(startX + 62.f, startY + 164.f);
+    const sf::Vector2f outputPos(startX + 205.f, startY + 125.f);
+
+    auto drawSlot = [&](Inventory& inventory, int index, const sf::Vector2f& position) {
+        sf::RectangleShape slot(sf::Vector2f(slotSize, slotSize));
+        if(index < 2) {
+            slot.setSize(sf::Vector2f(slotSize, slotSize));
+        } else {
+            slot.setSize(sf::Vector2f(slotSize + 5, slotSize + 5));
+        }
+        
+        slot.setPosition(position);
+        slot.setFillColor(sf::Color(80, 80, 80, 220));
+        slot.setOutlineColor(sf::Color(180, 180, 180));
+        slot.setOutlineThickness(2.f);
+        window.draw(slot);
+
+        ItemStack& item = inventory.getSlot(index);
+        if (item.isEmpty()) {
+            return;
+        }
+
+        sf::Sprite* itemSprite = getSprite(item.itemID);
+        if (itemSprite) {
+            const sf::Vector2f slotCenter(
+                position.x + slotSize / 2.f,
+                position.y + slotSize / 2.f
+            );
+
+            itemSprite->setOrigin({itemSprite->getLocalBounds().position.x + itemSprite->getLocalBounds().size.x / 2.f, itemSprite->getLocalBounds().position.y + itemSprite->getLocalBounds().size.y / 2.f});
+            itemSprite->setPosition(slotCenter);
+            itemSprite->setScale({0.20f, 0.20f});
+            window.draw(*itemSprite);
+        }
+
+        if (item.count >= 2) {
+            sf::Text text(font, std::to_string(item.count), 20);
+            text.setFillColor(sf::Color::White);
+            sf::FloatRect textBounds = text.getLocalBounds();
+            text.setOrigin({
+                textBounds.position.x + textBounds.size.x,
+                textBounds.position.y + textBounds.size.y
+            });
+            text.setPosition({position.x + slotSize - 4.f, position.y + slotSize - 3.f});
+            window.draw(text);
+        }
+    };
+
+    sf::Text title(font, "Oven", 20);
+    title.setFillColor(sf::Color::White);
+    title.setPosition({startX + 14.f, startY + 58.f});
+    window.draw(title);
+
+    drawSlot(ovenInventory, 0, inputPos);
+    drawSlot(ovenInventory, 1, fuelPos);
+    drawSlot(ovenInventory, 2, outputPos);
+
+    float progressPercent = 0.f;
+    if (maxProgress > 0.f) {
+        progressPercent = progress / maxProgress;
+    }
+    if (progressPercent < 0.f) progressPercent = 0.f;
+    if (progressPercent > 1.f) progressPercent = 1.f;
+
+    const float arrowX = startX + 123.f;
+    const float arrowY = startY + 132.f;
+    const float arrowBodyWidth = 54.f;
+    const float arrowHeadWidth = 18.f;
+    const float arrowBodyHeight = 14.f;
+    const float arrowHeadHeight = 26.f;
+    const float arrowHeight = arrowHeadHeight;
+    const float arrowTotalWidth = arrowBodyWidth + arrowHeadWidth;
+    const float arrowCenterY = arrowY + arrowHeadHeight / 2.f;
+    const float arrowBodyTop = arrowCenterY - arrowBodyHeight / 2.f;
+    const float arrowBodyBottom = arrowCenterY + arrowBodyHeight / 2.f;
+
+    sf::ConvexShape arrowBack(7);
+    arrowBack.setPoint(0, {arrowX, arrowBodyTop});
+    arrowBack.setPoint(1, {arrowX + arrowBodyWidth, arrowBodyTop});
+    arrowBack.setPoint(2, {arrowX + arrowBodyWidth, arrowY});
+    arrowBack.setPoint(3, {arrowX + arrowTotalWidth, arrowCenterY});
+    arrowBack.setPoint(4, {arrowX + arrowBodyWidth, arrowY + arrowHeadHeight});
+    arrowBack.setPoint(5, {arrowX + arrowBodyWidth, arrowBodyBottom});
+    arrowBack.setPoint(6, {arrowX, arrowBodyBottom});
+    arrowBack.setFillColor(sf::Color(35, 35, 35, 230));
+    arrowBack.setOutlineColor(sf::Color(120, 120, 120));
+    arrowBack.setOutlineThickness(1.f);
+    window.draw(arrowBack);
+
+    const float arrowFillWidth = arrowTotalWidth * progressPercent;
+    if (arrowFillWidth > 0.f) {
+        if (arrowFillWidth <= arrowBodyWidth) {
+            sf::RectangleShape arrowFill(sf::Vector2f(arrowFillWidth, arrowBodyHeight));
+            arrowFill.setPosition({arrowX, arrowBodyTop});
+            arrowFill.setFillColor(sf::Color(210, 210, 210));
+            window.draw(arrowFill);
+        } else {
+            const float headFillWidth = arrowFillWidth - arrowBodyWidth;
+            const float headFillRatio = headFillWidth / arrowHeadWidth;
+            const float halfHeadHeight = arrowHeadHeight / 2.f;
+            const float filledHalfHeight = arrowBodyHeight / 2.f + (halfHeadHeight - arrowBodyHeight / 2.f) * headFillRatio;
+            const float headRightX = arrowX + arrowBodyWidth + headFillWidth;
+
+            sf::ConvexShape arrowFill(7);
+            arrowFill.setPoint(0, {arrowX, arrowBodyTop});
+            arrowFill.setPoint(1, {arrowX + arrowBodyWidth, arrowBodyTop});
+            arrowFill.setPoint(2, {arrowX + arrowBodyWidth, arrowCenterY - filledHalfHeight});
+            arrowFill.setPoint(3, {headRightX, arrowCenterY});
+            arrowFill.setPoint(4, {arrowX + arrowBodyWidth, arrowCenterY + filledHalfHeight});
+            arrowFill.setPoint(5, {arrowX + arrowBodyWidth, arrowBodyBottom});
+            arrowFill.setPoint(6, {arrowX, arrowBodyBottom});
+            arrowFill.setFillColor(sf::Color(210, 210, 210));
+            window.draw(arrowFill);
+        }
+    }
+
+    float fuelPercent = 0.f;
+    if (maxFuelTime > 0.f) {
+        fuelPercent = fuelTime / maxFuelTime;
+    }
+    if (fuelPercent < 0.f) fuelPercent = 0.f;
+    if (fuelPercent > 1.f) fuelPercent = 1.f;
+
+    const sf::Vector2f flameBase(fuelPos.x + 11.f, fuelPos.y - 35.f);
+    const float flamePixel = 2.f;
+    const char* flameMask[14] = {
+        "....#....",
+        "....#....",
+        "...###...",
+        "...###...",
+        "..#####..",
+        "..#####..",
+        ".#######.",
+        ".###.###.",
+        "###...###",
+        "###...###",
+        "###...###",
+        "####.####",
+        ".#######.",
+        "..#####.."
+    };
+
+    for (int y = 0; y < 14; ++y) {
+        for (int x = 0; x < 9; ++x) {
+            if (flameMask[y][x] != '#') {
+                continue;
+            }
+
+            sf::RectangleShape flamePixelBack(sf::Vector2f(flamePixel, flamePixel));
+            flamePixelBack.setPosition({flameBase.x + x * flamePixel, flameBase.y + y * flamePixel});
+            flamePixelBack.setFillColor(sf::Color(35, 35, 35, 230));
+            window.draw(flamePixelBack);
+        }
+    }
+
+    const int litRows = static_cast<int>(14.f * fuelPercent + 0.5f);
+    for (int y = 14 - litRows; y < 14; ++y) {
+        for (int x = 0; x < 9; ++x) {
+            if (y < 0 || flameMask[y][x] != '#') {
+                continue;
+            }
+
+            sf::RectangleShape flamePixelFill(sf::Vector2f(flamePixel, flamePixel));
+            flamePixelFill.setPosition({flameBase.x + x * flamePixel, flameBase.y + y * flamePixel});
+            flamePixelFill.setFillColor(sf::Color(255, 125, 35));
+            window.draw(flamePixelFill);
+        }
+    }
+}
+
 sf::Sprite* Renderer::getSprite(int itemID) {
     switch(itemID) {
         case 1:  return &grassSprite;
@@ -559,6 +754,14 @@ sf::Sprite* Renderer::getSprite(int itemID) {
         case 19: return &stoneSwordSprite;
         case 20: return &woodenSlabSprite;
         case 21: return &cobblestoneSprite;
+        case 22: return &coalSprite;
+        case 23: return &coalOreStoneSprite;
+        case 24: return &coalOreDeepslateSprite;
+        case 25: return &ironIngotSprite;
+        case 26: return &rawIronSprite;
+        case 27: return &ironOreStoneSprite;
+        case 28: return &ironOreDeepslateSprite;
+        case 29: return &ovenSprite;
         default: return nullptr;
     }
 }

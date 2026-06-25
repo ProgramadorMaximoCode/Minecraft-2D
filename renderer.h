@@ -31,6 +31,15 @@ private:
     sf::Sprite stoneSwordSprite;
     sf::Sprite woodenSlabSprite;
     sf::Sprite cobblestoneSprite;
+    sf::Sprite coalSprite;
+    sf::Sprite coalOreStoneSprite;
+    sf::Sprite coalOreDeepslateSprite;
+    sf::Sprite ironIngotSprite;
+    sf::Sprite rawIronSprite;
+    sf::Sprite ironOreStoneSprite;
+    sf::Sprite ironOreDeepslateSprite;
+    sf::Sprite ovenSprite;
+
 
     sf::Sprite* getSprite(int itemID);
 
@@ -61,7 +70,15 @@ public:
              sf::Texture& stoneShovel,
              sf::Texture& stoneSword,
              sf::Texture& woodenSlab,
-             sf::Texture& cobblestone);
+             sf::Texture& cobblestone,
+             sf::Texture& coal,
+             sf::Texture& coalOreStone,
+             sf::Texture& coalOreDeepslate,
+             sf::Texture& ironIngot,
+             sf::Texture& rawIron,
+             sf::Texture& ironOreStone,
+             sf::Texture& ironOreDeepslate,
+             sf::Texture& oven);
 
     void drawWorld(sf::RenderWindow& window, const World& world, int chunkMinX, int chunkMaxX, int chunkMinY, int chunkMaxY, int blockX, int blockY, Player& player);
     void drawPlayer(sf::RenderWindow& window, const Player& player);
@@ -76,4 +93,5 @@ public:
     void drawOutputSlot2x2(Inventory& output, sf::RenderWindow& window, const sf::Font& font);
     void drawCraftingGrid3x3(Inventory& craftingGrid, sf::RenderWindow& window, const sf::Font& font);
     void drawOutputSlot3x3(Inventory& output, sf::RenderWindow& window, const sf::Font& font);
+    void drawOven(sf::RenderWindow& window, Inventory& ovenInventory, const sf::Font& font, float progress, float maxProgress, float fuelTime, float maxFuelTime);
 };
