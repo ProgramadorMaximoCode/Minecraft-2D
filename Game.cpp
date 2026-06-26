@@ -18,14 +18,14 @@
 using namespace sf;
 
 int Game::run() {
-    Music music;
+    /*Music music;
     if (!music.openFromFile("C:\\Programacion\\SFML\\Minecraft 2D\\Sounds\\AriaMath.mp3")) {
         std::cerr << "No se pudo cargar Sounds\\AriaMath.mp3\n";
         return 1;
     }
     music.setVolume(100.f);
     music.setLooping(true);
-    music.play();
+    music.play();*/
     
     RenderWindow window(VideoMode({800, 720}), "Minecraft 2D!");
     Font font;
@@ -47,7 +47,7 @@ int Game::run() {
     Texture dirt, grass, stone, deepslate, bedrock, chest, steve, steve2, animationBreaking, wood, leaf, 
     planks, woodenPickaxe, stick, craftingTable, woodenAxe, woodenShovel, woodenSword, stonePickaxe, stoneAxe, 
     stoneShovel, stoneSword, woodenSlab, cobblestone, coal, coalOreStone, coalOreDeepslate, ironIngot, rawIron, 
-    ironOreStone, ironOreDeepslate, oven;
+    ironOreStone, ironOreDeepslate, oven, ironPickaxe, ironAxe, ironSword, ironShovel, diamond, diamondOreStone, diamondOreDeepslate;
 
     if (!dirt.loadFromFile("C:\\Programacion\\SFML\\Minecraft 2D\\Assets\\Dirt.png")) return 1;
     if (!grass.loadFromFile("C:\\Programacion\\SFML\\Minecraft 2D\\Assets\\Grass.png")) return 1;
@@ -81,40 +81,54 @@ int Game::run() {
     if (!ironOreStone.loadFromFile("C:\\Programacion\\SFML\\Minecraft 2D\\Assets\\IronOreStone.png")) return 1; 
     if (!ironOreDeepslate.loadFromFile("C:\\Programacion\\SFML\\Minecraft 2D\\Assets\\IronOreDeepslate.png")) return 1; 
     if (!oven.loadFromFile("C:\\Programacion\\SFML\\Minecraft 2D\\Assets\\Oven.png")) return 1; 
+    if (!ironPickaxe.loadFromFile("C:\\Programacion\\SFML\\Minecraft 2D\\Assets\\IronPickaxe.png")) return 1;
+    if (!ironAxe.loadFromFile("C:\\Programacion\\SFML\\Minecraft 2D\\Assets\\IronAxe.png")) return 1;
+    if (!ironShovel.loadFromFile("C:\\Programacion\\SFML\\Minecraft 2D\\Assets\\IronShovel.png")) return 1;
+    if (!ironSword.loadFromFile("C:\\Programacion\\SFML\\Minecraft 2D\\Assets\\IronSword.png")) return 1;
+    if (!diamond.loadFromFile("C:\\Programacion\\SFML\\Minecraft 2D\\Assets\\Diamond.png")) return 1; 
+    if (!diamondOreStone.loadFromFile("C:\\Programacion\\SFML\\Minecraft 2D\\Assets\\DiamondOreStone.png")) return 1; 
+    if (!diamondOreDeepslate.loadFromFile("C:\\Programacion\\SFML\\Minecraft 2D\\Assets\\DiamondOreDeepslate.png")) return 1;
     int currentFrame = 0;
     int totalFrames = 9;
 
     std::vector<ItemData> itemData = {
-        {0, AIR, nullptr, false, 0, false, NONE, 0, 0, 0.0f, NONE, {0, 0}},
-        {1, GRASS, &grass, true, 64, true, NONE, 0, 1, 0.6f, SHOVEL, {1, 1}},
-        {2, DIRT, &dirt, true, 64, true, NONE, 0, 1, 0.5f, SHOVEL, {2, 1}},
-        {3, STONE, &stone, true, 64, true, NONE, 0, 1, 1.5f, PICKAXE, {21, 1}},
-        {4, DEEPSLATE, &deepslate, true, 64, true, NONE, 0, 1, 3.0f, PICKAXE, {4, 1}},
-        {5, BEDROCK, &bedrock, true, 64, true, NONE, 0, 1, 9999999.9f, NONE, {5, 1}},
-        {6, CHEST, &chest, false, 1, true, NONE, 0, 1, 2.5f , AXE, {6, 1}},
-        {7, WOOD, &wood, true , 64 ,true ,NONE ,0 , 1, 2.0f , AXE, {7, 1}},
-        {8 , LEAF ,&leaf ,true ,64 ,true ,NONE ,0 ,1, 0.3f , HOE, {8, 1}},
-        {9 , PLANKS ,&planks ,true ,64 ,true ,NONE ,0 ,1, 2.0f , AXE, {9, 1}},
-        {10, WOODEN_PICKAXE, &woodenPickaxe, false, 1, false, PICKAXE, 1, 2, 60.0f, NONE, {10, 1}},
-        {11, STICK, &stick, true, 64, false, NONE, 0, 1, 0.0f, NONE, {11, 1}},
-        {12, CRAFTING_TABLE, &craftingTable, true, 64, true, NONE, 0, 1, 2.5f, AXE, {12, 1}},
-        {13, WOODEN_AXE, &woodenAxe, false, 1, false, AXE, 1, 2, 60.0f, NONE, {13, 1}},
-        {14, WOODEN_SHOVEL, &woodenShovel, false, 1, false, SHOVEL, 1, 2, 60.0f, NONE, {0, 0}},
-        {15, WOODEN_SWORD, &woodenSword, false, 1, false, SWORD, 1, 2, 60.0f, NONE, {0, 0}},
-        {16, STONE_PICKAXE, &stonePickaxe, false, 1, false, PICKAXE, 2, 3, 132.0f, NONE, {0, 0}},
-        {17, STONE_AXE, &stoneAxe, false, 1, false, AXE, 2, 3, 132.0f, NONE, {0, 0}},
-        {18, STONE_SHOVEL, &stoneShovel, false, 1, false, SHOVEL, 2, 3, 132.0f, NONE, {0, 0}},
-        {19, STONE_SWORD, &stoneSword, false, 1, false, SWORD, 2, 3, 132.0f , NONE, {0, 0}},
-        {20, WOODEN_SLAB, &woodenSlab, true, 64, true, NONE, 0, 1, 2.0f, AXE, {20, 1}},
-        {21, COBBLESTONE, &cobblestone, true, 64, true, NONE, 0, 1, 1.5f, PICKAXE, {21, 1}},
-        {22, COAL, &coal, true, 64, false, NONE, 0, 1, 0.0f, NONE, {0, 0}},
-        {23, COAL_ORE_STONE, &coalOreStone, true, 64, true, NONE, 0, 1, 3.0f, PICKAXE, {22, 1}},
-        {24, COAL_ORE_DEEPSLATE, &coalOreDeepslate, true, 64, true, NONE, 0, 1, 4.5f, PICKAXE, {22, 1}},
-        {25, IRON_INGOT, &ironIngot, true, 64, false, NONE, 0, 1, 0.0f, NONE, {0, 0}},
-        {26, RAW_IRON, &rawIron, true, 64, false, NONE, 0, 1, 0.0f, NONE, {0, 0}},
-        {27, IRON_ORE_STONE, &ironOreStone, true, 64, true, NONE, 0, 1, 3.0f, PICKAXE, {26, 1}},
-        {28, IRON_ORE_DEEPSLATE, &ironOreDeepslate, true, 64, true, NONE, 0, 1, 4.5f, PICKAXE, {26, 1}},
-        {29, OVEN, &oven, true, 64, true, NONE, 0, 1, 3.5f, PICKAXE, {29, 1}}
+        {0, AIR, nullptr, false, 0, false, NONE, 0, 0, 0.0f, NONE, {0, 0}, -1},
+        {1, GRASS, &grass, true, 64, true, NONE, 0, 1, 0.6f, SHOVEL, {1, 1}, 0},
+        {2, DIRT, &dirt, true, 64, true, NONE, 0, 1, 0.5f, SHOVEL, {2, 1}, 0},
+        {3, STONE, &stone, true, 64, true, NONE, 0, 1, 1.5f, PICKAXE, {21, 1}, 1},
+        {4, DEEPSLATE, &deepslate, true, 64, true, NONE, 0, 1, 3.0f, PICKAXE, {4, 1}, 1},
+        {5, BEDROCK, &bedrock, true, 64, true, NONE, 0, 1, 9999999.9f, NONE, {5, 1}, 0},
+        {6, CHEST, &chest, false, 1, true, NONE, 0, 1, 2.5f , AXE, {6, 1}, 0},
+        {7, WOOD, &wood, true , 64 ,true ,NONE ,0 , 1, 2.0f , AXE, {7, 1}, 0},
+        {8, LEAF ,&leaf ,true ,64 ,true ,NONE ,0 ,1, 0.3f , HOE, {8, 1}, -1},
+        {9, PLANKS ,&planks ,true ,64 ,true ,NONE ,0 ,1, 2.0f, AXE, {9, 1}, 0},
+        {10, WOODEN_PICKAXE, &woodenPickaxe, false, 1, false, PICKAXE, 1, 2, 60.0f, NONE, {10, 1}, -1},
+        {11, STICK, &stick, true, 64, false, NONE, 0, 1, 0.0f, NONE, {11, 1}, -1},
+        {12, CRAFTING_TABLE, &craftingTable, true, 64, true, NONE, 0, 1, 2.5f, AXE, {12, 1}, 0},
+        {13, WOODEN_AXE, &woodenAxe, false, 1, false, AXE, 1, 2, 60.0f, NONE, {13, 1}, -1},
+        {14, WOODEN_SHOVEL, &woodenShovel, false, 1, false, SHOVEL, 1, 2, 60.0f, NONE, {0, 0}, -1},
+        {15, WOODEN_SWORD, &woodenSword, false, 1, false, SWORD, 1, 2, 60.0f, NONE, {0, 0}, -1},
+        {16, STONE_PICKAXE, &stonePickaxe, false, 1, false, PICKAXE, 3, 3, 132.0f, NONE, {0, 0}, -1},
+        {17, STONE_AXE, &stoneAxe, false, 1, false, AXE, 3, 3, 132.0f, NONE, {0, 0}, -1},
+        {18, STONE_SHOVEL, &stoneShovel, false, 1, false, SHOVEL, 3, 3, 132.0f, NONE, {0, 0}, -1},
+        {19, STONE_SWORD, &stoneSword, false, 1, false, SWORD, 3, 3, 132.0f , NONE, {0, 0}, -1},
+        {20, WOODEN_SLAB, &woodenSlab, true, 64, true, NONE, 0, 1, 2.0f, AXE, {20, 1}, 0},
+        {21, COBBLESTONE, &cobblestone, true, 64, true, NONE, 0, 1, 1.5f, PICKAXE, {21, 1}, 1},
+        {22, COAL, &coal, true, 64, false, NONE, 0, 1, 0.0f, NONE, {0, 0}, -1},
+        {23, COAL_ORE_STONE, &coalOreStone, true, 64, true, NONE, 0, 1, 3.0f, PICKAXE, {22, 1}, 1},
+        {24, COAL_ORE_DEEPSLATE, &coalOreDeepslate, true, 64, true, NONE, 0, 1, 4.5f, PICKAXE, {22, 1}, 2},
+        {25, IRON_INGOT, &ironIngot, true, 64, false, NONE, 0, 1, 0.0f, NONE, {0, 0}, -1},
+        {26, RAW_IRON, &rawIron, true, 64, false, NONE, 0, 1, 0.0f, NONE, {0, 0}, -1},
+        {27, IRON_ORE_STONE, &ironOreStone, true, 64, true, NONE, 0, 1, 3.0f, PICKAXE, {26, 1}, 3},
+        {28, IRON_ORE_DEEPSLATE, &ironOreDeepslate, true, 64, true, NONE, 0, 1, 4.5f, PICKAXE, {26, 1}, 3},
+        {29, OVEN, &oven, true, 64, true, NONE, 0, 1, 3.5f, PICKAXE, {29, 1}, 1},
+        {30, IRON_PICKAXE, &ironPickaxe, false, 1, false, PICKAXE, 4, 5, 251.0f, NONE, {0, 0}, -1},
+        {31, IRON_AXE, &ironAxe, false, 1, false, AXE, 4, 5, 251.0f, NONE, {0, 0}, -1},
+        {32, IRON_SHOVEL, &ironShovel, false, 1, false, SHOVEL, 4, 5, 251.0f, NONE, {0, 0}, -1},
+        {33, IRON_SWORD, &ironSword, false, 1, false, SWORD, 4, 5, 251.0f , NONE, {0, 0}, -1},
+        {34, DIAMOND, &diamond, true, 64, false, NONE, 0, 1, 0.0f, NONE, {0, 0}, -1},
+        {35, DIAMOND_ORE_STONE, &diamondOreStone, true, 64, true, NONE, 0, 1, 3.0f, PICKAXE, {34, 1}, 4},
+        {36, DIAMOND_ORE_DEEPSLATE, &diamondOreDeepslate, true, 64, true, NONE, 0, 1, 4.5f, PICKAXE, {34, 1}, 4},
     };
 
     auto getItemData = [&](int itemID) -> const ItemData* {
@@ -132,7 +146,7 @@ int Game::run() {
     float tileSize = dirt.getSize().x * 0.25f;
     float gravity = 500.f;
 
-    Renderer renderer(tileSize, dirt, grass, stone, deepslate, bedrock, chest, animationBreaking, wood, leaf, planks, woodenPickaxe, stick, craftingTable, woodenAxe, woodenShovel, woodenSword, stonePickaxe, stoneAxe, stoneShovel, stoneSword, woodenSlab, cobblestone, coal, coalOreStone, coalOreDeepslate, ironIngot, rawIron, ironOreStone, ironOreDeepslate, oven);
+    Renderer renderer(tileSize, dirt, grass, stone, deepslate, bedrock, chest, animationBreaking, wood, leaf, planks, woodenPickaxe, stick, craftingTable, woodenAxe, woodenShovel, woodenSword, stonePickaxe, stoneAxe, stoneShovel, stoneSword, woodenSlab, cobblestone, coal, coalOreStone, coalOreDeepslate, ironIngot, rawIron, ironOreStone, ironOreDeepslate, oven, ironPickaxe, ironAxe, ironShovel, ironSword, diamond, diamondOreStone, diamondOreDeepslate);
 
     world.generate();
     world.setBlock(0, 70, 6);
@@ -227,14 +241,10 @@ int Game::run() {
     };
 
     Inventory hotbar(9);
-    hotbar.addItem(12, 1);
-    hotbar.addItem(7, 64);
-    hotbar.addItem(3, 64);
-    hotbar.addItem(20, 64);
-    hotbar.addItem(16, 1);
-    hotbar.addItem(18, 1);
-    hotbar.addItem(29, 1);
     Inventory inventory(27);
+    hotbar.addItem(30, 1);
+    hotbar.addItem(31, 1);
+    hotbar.addItem(32, 1);
     ItemStack cursorItem;
     int selectedSlot = 0;
     bool hasCursorItem = false;
@@ -371,7 +381,43 @@ int Game::run() {
                 { {21, 1}, {21, 1}, {21, 1}}
             },
             {29, 1}
-        }
+        }, 
+        {
+            IRON_PICKAXE,
+            {
+                { {25, 1}, {25, 1}, {25, 1} },
+                { {0, 0}, {11, 1}, {0, 0} },
+                { {0, 0}, {11, 1}, {0, 0} }
+            },
+            {30, 1}
+        },
+        {
+            IRON_AXE,
+            {
+                { {25, 1}, {25, 1}, {0, 0} },
+                { {25, 1}, {11, 1}, {0, 0} },
+                { {0, 0}, {11, 1}, {0, 0} }
+            },
+            {31, 1}
+        },
+        {
+            IRON_SHOVEL,
+            {
+                { {0, 0}, {25, 1}, {0, 0} },
+                { {0, 0}, {11, 1}, {0, 0} },
+                { {0, 0}, {11, 1}, {0, 0} }
+            },
+            {32, 1}
+        },
+        {
+            IRON_SWORD,
+            {
+                { {0, 0}, {25, 1}, {0, 0} },
+                { {0, 0}, {25, 1}, {0, 0} },
+                { {0, 0}, {11, 1}, {0, 0} }
+            },
+            {33 ,1}
+        },
     };
     
     struct RecipeOven {
@@ -717,6 +763,32 @@ int Game::run() {
         chests.erase(chestIt);
     };
     
+    auto dropOvenContents = [&](int blockX, int blockY) {
+        auto ovenIt = ovens.find({blockX, blockY});
+        if(ovenIt == ovens.end()) {
+            return;
+        }
+
+        for(int i = 0; i < ovenIt->second.inventory.size(); ++i) {
+            if(!ovenIt->second.inventory.getSlot(i).isEmpty()) {
+                items.push_back(ItemEntity{
+                    ovenIt->second.inventory.getSlot(i).itemID,
+                    ovenIt->second.inventory.getSlot(i).count,
+                    {blockX * tileSize, blockY * tileSize},
+                    {0.f, -100.f}
+                });
+                ovenIt->second.inventory.getSlot(i) = {};
+            }
+        }
+
+        if(selectedOven == &ovenIt->second) {
+            selectedOven = nullptr;
+            isOvenOpen = false;
+        }
+
+        ovens.erase(ovenIt);
+    };
+
     auto calculateRequiredTime = [&](const ItemData& block, int toolType, float toolSpeed) {
         if(block.name == AIR) return 0.0f;
 
@@ -762,6 +834,7 @@ int Game::run() {
                 breakTime += dt;
 
                 int toolType = NONE;
+                int toolLevel = 0;
                 float toolSpeed = 1.0f;
 
                 if(selectedSlot >= 0 && selectedSlot < hotbar.size()) {
@@ -769,6 +842,7 @@ int Game::run() {
 
                     if(selectedItemData != nullptr && selectedItemData->toolType != NONE) {
                         toolType = selectedItemData->toolType;
+                        toolLevel = selectedItemData->toolLevel;
                         toolSpeed = static_cast<float>(std::max(1, selectedItemData->toolSpeed));
                     }
                 }
@@ -790,14 +864,19 @@ int Game::run() {
 
                     if(block == 6) {
                         dropChestContents(blockX, blockY);
+                    } else if(block == 29) {
+                        dropOvenContents(blockX, blockY);
                     }
 
-                    items.push_back(ItemEntity{
-                        blockItemData->output.itemID,
-                        blockItemData->output.count,
-                        {blockX * tileSize, blockY * tileSize},
-                        {0.f, -100.f}
-                    });
+                    if(toolLevel >= blockItemData->levelRequiredToDrop) {
+                        items.push_back(ItemEntity{
+                            blockItemData->output.itemID,
+                            blockItemData->output.count,
+                            {blockX * tileSize, blockY * tileSize},
+                            {0.f, -100.f}
+                        });
+                    }
+                    
 
                     world.setBlock(blockX, blockY, 0);
 
@@ -900,12 +979,20 @@ int Game::run() {
                 oven.inventory.getSlot(1).count--;
 
                 oven.remainingSmelts = actualFuel->numberObjects;
+                oven.fuelTime = oven.remainingSmelts;
+                oven.maxFuelTime = actualFuel->numberObjects;
 
                 if(oven.inventory.getSlot(1).count <= 0) {
                     oven.inventory.getSlot(1).itemID = 0;
                     oven.inventory.getSlot(1).count = 0;
                 }
             }
+
+            auto& outputSlot = oven.inventory.getSlot(2);
+            if(outputSlot.count > 0 && outputSlot.itemID != actualRecipe->output)
+                continue;
+            if(outputSlot.count >= 64)
+                continue;
 
             oven.progress += dt;
 
@@ -919,8 +1006,6 @@ int Game::run() {
                     oven.inventory.getSlot(0).count = 0;
                 }
 
-                auto& outputSlot = oven.inventory.getSlot(2);
-
                 if(outputSlot.count == 0) {
                     outputSlot.itemID = actualRecipe->output;
                 }
@@ -928,6 +1013,7 @@ int Game::run() {
                 outputSlot.count++;
 
                 oven.remainingSmelts--;
+                oven.fuelTime = oven.remainingSmelts;
             }
         }
     };

@@ -69,6 +69,7 @@ void World::generate() {
 
     FastNoiseLite coalOre;
     FastNoiseLite ironOre;
+    FastNoiseLite diamondOre;
 
     std::random_device rd;
     std::mt19937 gen(rd());
@@ -84,6 +85,7 @@ void World::generate() {
     caveTunnelRadius.SetSeed(seedDist(gen));
     coalOre.SetSeed(seedDist(gen));
     ironOre.SetSeed(seedDist(gen));
+    diamondOre.SetSeed(seedDist(gen));
 
     terrain.SetNoiseType(FastNoiseLite::NoiseType_OpenSimplex2);
     terrainDetail.SetNoiseType(FastNoiseLite::NoiseType_OpenSimplex2);
@@ -94,6 +96,7 @@ void World::generate() {
     caveTunnelRadius.SetNoiseType(FastNoiseLite::NoiseType_OpenSimplex2);
     coalOre.SetNoiseType(FastNoiseLite::NoiseType_OpenSimplex2);
     ironOre.SetNoiseType(FastNoiseLite::NoiseType_OpenSimplex2);
+    diamondOre.SetNoiseType(FastNoiseLite::NoiseType_OpenSimplex2);
 
 
     terrain.SetFrequency(0.01f);
@@ -105,6 +108,7 @@ void World::generate() {
     caveTunnelRadius.SetFrequency(0.055f);
     coalOre.SetFrequency(0.18);
     ironOre.SetFrequency(0.2);
+    diamondOre.SetFrequency(0.25);
 
     std::uniform_int_distribution<> trees(0, 10);
     std::uniform_int_distribution<> treeHeight(4, 7);
@@ -252,6 +256,8 @@ void World::generate() {
         }
     }
 
+    //Carbon
+
     for(int x = 0; x < TOTAL_WIDTH; x++) {
         for(int y = 0; y < TOTAL_HEIGHT; y++) {
             int block = getBlock(x, y);
@@ -265,7 +271,7 @@ void World::generate() {
                     setBlock(x, y, 23);
                 } else if(block == 4) {
                     float coal2 = coalOre.GetNoise(static_cast<float>(x), static_cast<float>(y));
-                    if(coal > 0.95) {
+                    if(coal > 0.98) {
                         setBlock(x, y, 24);
                     }
                 }
@@ -274,6 +280,7 @@ void World::generate() {
         
     } 
 
+    //Hierro 
     for(int x = 0; x < TOTAL_WIDTH; x++) {
         for(int y = 0; y < TOTAL_HEIGHT; y++) {
             int block = getBlock(x, y);
@@ -293,6 +300,26 @@ void World::generate() {
         
     } 
 
+    //Diamantes
+    for(int x = 0; x < TOTAL_WIDTH; x++) {
+        for(int y = 220; y < TOTAL_HEIGHT; y++) {
+            int block = getBlock(x, y);
+            if(block != 3 && block != 4) {
+                continue;
+            }
+            float diamond = diamondOre.GetNoise(static_cast<float>(x), static_cast<float>(y));
+
+            if(diamond > 0.90f) {
+                if(block == 3) {
+                    setBlock(x, y, 35);
+                } else if(block == 4) {
+                    setBlock(x, y, 36);
+                }
+            }
+        }
+        
+    } 
+    
     for(const TreeData& tree : treesToPlace) {
         int topOfTree = tree.groundY - tree.height;
 

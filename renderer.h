@@ -39,7 +39,13 @@ private:
     sf::Sprite ironOreStoneSprite;
     sf::Sprite ironOreDeepslateSprite;
     sf::Sprite ovenSprite;
-
+    sf::Sprite ironPickaxeSprite;
+    sf::Sprite ironAxeSprite;
+    sf::Sprite ironShovelSprite;
+    sf::Sprite ironSwordSprite;
+    sf::Sprite diamondSprite;
+    sf::Sprite diamondOreStoneSprite;
+    sf::Sprite diamondOreDeepslateSprite;
 
     sf::Sprite* getSprite(int itemID);
 
@@ -78,7 +84,14 @@ public:
              sf::Texture& rawIron,
              sf::Texture& ironOreStone,
              sf::Texture& ironOreDeepslate,
-             sf::Texture& oven);
+             sf::Texture& oven,
+             sf::Texture& ironPickaxe,
+             sf::Texture& ironAxe,
+             sf::Texture& ironShovel,
+             sf::Texture& ironSword, 
+             sf::Texture& diamond,
+             sf::Texture& diamondOreStone,
+             sf::Texture& diamondOreDeepslate);
 
     void drawWorld(sf::RenderWindow& window, const World& world, int chunkMinX, int chunkMaxX, int chunkMinY, int chunkMaxY, int blockX, int blockY, Player& player);
     void drawPlayer(sf::RenderWindow& window, const Player& player);

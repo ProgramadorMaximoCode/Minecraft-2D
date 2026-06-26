@@ -42,6 +42,13 @@ enum ItemsName {
         IRON_ORE_STONE, 
         IRON_ORE_DEEPSLATE, 
         OVEN,
+        IRON_PICKAXE,
+        IRON_AXE,
+        IRON_SHOVEL,
+        IRON_SWORD,
+        DIAMOND, 
+        DIAMOND_ORE_STONE,
+        DIAMOND_ORE_DEEPSLATE,
 };
 
 struct ItemData {
@@ -57,8 +64,9 @@ struct ItemData {
     float hardness;
     toolTypes requiredTool;
     ItemStack output;
+    int levelRequiredToDrop;
 
-        ItemData(int id, ItemsName itemName, const sf::Texture* itemTexture, bool stackable, int maxStack, bool block, toolTypes tool, int level, int speed,float hard, toolTypes required, const ItemStack& out)
+        ItemData(int id, ItemsName itemName, const sf::Texture* itemTexture, bool stackable, int maxStack, bool block, toolTypes tool, int level, int speed,float hard, toolTypes required, const ItemStack& out, int levelrequired)
                 : itemID(id),
                     name(itemName),
                     texture(itemTexture),
@@ -70,5 +78,6 @@ struct ItemData {
                     toolSpeed(speed),
                     hardness(hard),
                     requiredTool(required),
-                    output(out) {}
+                    output(out), 
+                    levelRequiredToDrop(levelrequired) {}
 };

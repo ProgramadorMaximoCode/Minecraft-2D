@@ -1,6 +1,6 @@
 #include "renderer.h"
 
-Renderer::Renderer(float tileSize, sf::Texture& dirt, sf::Texture& grass, sf::Texture& stone, sf::Texture& deepSlate, sf::Texture& bedrock, sf::Texture& chest, sf::Texture& animationBreaking, sf::Texture& wood, sf::Texture& leaf, sf::Texture& planks, sf::Texture& woodenPickaxe, sf::Texture& stick, sf::Texture& craftingTable, sf::Texture& woodenAxe, sf::Texture& woodenShovel, sf::Texture& woodenSword, sf::Texture& stonePickaxe, sf::Texture& stoneAxe, sf::Texture& stoneShovel, sf::Texture& stoneSword, sf::Texture& woodenSlab, sf::Texture& cobblestone, sf::Texture& coal, sf::Texture& coalOreStone, sf::Texture& coalOreDeepslate, sf::Texture& ironIngot, sf::Texture& rawIron, sf::Texture& ironOreStone, sf::Texture& ironOreDeepslate, sf::Texture& oven)
+Renderer::Renderer(float tileSize, sf::Texture& dirt, sf::Texture& grass, sf::Texture& stone, sf::Texture& deepSlate, sf::Texture& bedrock, sf::Texture& chest, sf::Texture& animationBreaking, sf::Texture& wood, sf::Texture& leaf, sf::Texture& planks, sf::Texture& woodenPickaxe, sf::Texture& stick, sf::Texture& craftingTable, sf::Texture& woodenAxe, sf::Texture& woodenShovel, sf::Texture& woodenSword, sf::Texture& stonePickaxe, sf::Texture& stoneAxe, sf::Texture& stoneShovel, sf::Texture& stoneSword, sf::Texture& woodenSlab, sf::Texture& cobblestone, sf::Texture& coal, sf::Texture& coalOreStone, sf::Texture& coalOreDeepslate, sf::Texture& ironIngot, sf::Texture& rawIron, sf::Texture& ironOreStone, sf::Texture& ironOreDeepslate, sf::Texture& oven, sf::Texture& ironPickaxe, sf::Texture& ironAxe, sf::Texture& ironShovel, sf::Texture& ironSword, sf::Texture& diamond, sf::Texture& diamondOreStone, sf::Texture& diamondOreDeepslate)
     : tileSize(tileSize),
       dirtSprite(dirt),
       grassSprite(grass),
@@ -31,7 +31,14 @@ Renderer::Renderer(float tileSize, sf::Texture& dirt, sf::Texture& grass, sf::Te
       rawIronSprite(rawIron),
       ironOreStoneSprite(ironOreStone),
       ironOreDeepslateSprite(ironOreDeepslate),
-      ovenSprite(oven)
+      ovenSprite(oven),
+      ironPickaxeSprite(ironPickaxe),
+      ironAxeSprite(ironAxe),
+      ironShovelSprite(ironShovel),
+      ironSwordSprite(ironSword),
+      diamondSprite(diamond),
+      diamondOreStoneSprite(diamondOreStone),
+      diamondOreDeepslateSprite(diamondOreDeepslate)
       {
         dirtSprite.setScale({0.25f, 0.25f});
         grassSprite.setScale({0.25f, 0.25f});
@@ -64,6 +71,13 @@ Renderer::Renderer(float tileSize, sf::Texture& dirt, sf::Texture& grass, sf::Te
         ironOreStoneSprite.setScale({0.25f, 0.25f});
         ironOreDeepslateSprite.setScale({0.25f, 0.25f});
         ovenSprite.setScale({0.25f, 0.25f});
+        ironPickaxeSprite.setScale({0.25f, 0.25f});
+        ironAxeSprite.setScale({0.25f, 0.25f});
+        ironShovelSprite.setScale({0.25f, 0.25f});
+        ironSwordSprite.setScale({0.25f, 0.25f});
+        diamondSprite.setScale({0.25f, 0.25f});
+        diamondOreStoneSprite.setScale({0.25f, 0.25f});
+        diamondOreDeepslateSprite.setScale({0.25f, 0.25f});
 }
 
 void Renderer::drawWorld(sf::RenderWindow& window, const World& world, int chunkMinX, int chunkMaxX, int chunkMinY, int chunkMaxY, int blockX, int blockY, Player& player)
@@ -74,7 +88,7 @@ void Renderer::drawWorld(sf::RenderWindow& window, const World& world, int chunk
     int dx = std::abs(blockX - playerBlockX);
     int dy = std::abs(blockY - playerBlockY);
 
-    for(int i = 1; i <= 29; ++i) {
+    for(int i = 1; i <= 36; ++i) {
         getSprite(i)->setOrigin({0.f, 0.f});
         getSprite(i)->setScale({0.25f, 0.25f});
 
@@ -113,7 +127,7 @@ void Renderer::drawWorld(sf::RenderWindow& window, const World& world, int chunk
                     }
 
                     
-                    for(int i = 1; i <= 29; ++i) {
+                    for(int i = 1; i <= 36; ++i) {
                         if(block == i) {
                             sf::Sprite* sprite = getSprite(i);
                             if(sprite) {
@@ -762,6 +776,13 @@ sf::Sprite* Renderer::getSprite(int itemID) {
         case 27: return &ironOreStoneSprite;
         case 28: return &ironOreDeepslateSprite;
         case 29: return &ovenSprite;
+        case 30: return &ironPickaxeSprite;
+        case 31: return &ironAxeSprite;
+        case 32: return &ironShovelSprite;
+        case 33: return &ironSwordSprite;
+        case 34: return &diamondSprite;
+        case 35: return &diamondOreStoneSprite;
+        case 36: return &diamondOreDeepslateSprite;
         default: return nullptr;
     }
 }

@@ -9,9 +9,9 @@ class World {
         static const int CHUNK_SIZE = Chunk::SIZE;
 
         static const int WORLD_WIDTH = 63;
-        static const int WORLD_HEIGHT = 14;
+        static const int WORLD_HEIGHT = 20;
 
-        static const int TOTAL_WIDTH = CHUNK_SIZE * WORLD_WIDTH;
+        static const   int TOTAL_WIDTH = CHUNK_SIZE * WORLD_WIDTH;
         static const int TOTAL_HEIGHT = CHUNK_SIZE * WORLD_HEIGHT;
 
         World();
